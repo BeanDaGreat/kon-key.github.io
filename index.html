@@ -50,6 +50,18 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <span class="hidden md:block">Anime</span>
             </button>
+            <button id="nav-tv" onclick="fetchDiscovery('tv', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl text-gray-500 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span class="hidden md:block">TV Shows</span>
+            </button>
+            <button id="nav-action" onclick="fetchDiscovery('action', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl text-gray-500 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <span class="hidden md:block">Action</span>
+            </button>
+            <button id="nav-comedy" onclick="fetchDiscovery('comedy', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl text-gray-500 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="hidden md:block">Comedy</span>
+            </button>
         </nav>
     </aside>
 
@@ -67,9 +79,17 @@
 
 
         <div class="space-y-6">
-            <div class="flex items-center justify-between border-b border-white/5 pb-4">
-                <h2 id="viewTitle" class="text-2xl font-black uppercase tracking-tighter">Connecting</h2>
-                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">kom.</div>
+            <div class="flex items-center justify-between border-b border-white/5 pb-4 flex-wrap gap-2">
+                <div class="flex items-center gap-4">
+                    <h2 id="viewTitle" class="text-2xl font-black uppercase tracking-tighter">Connecting</h2>
+                    <select id="sortSelect" onchange="handleSortChange()" class="bg-zinc-900 border border-white/20 rounded px-2 py-1 text-xs font-bold uppercase text-gray-300 outline-none cursor-pointer">
+                        <option value="popularity.desc">Popularity</option>
+                        <option value="primary_release_date.desc">Year</option>
+                    </select>
+                    <select id="yearSelect" onchange="applyFilters()" class="hidden bg-zinc-900 border border-white/20 rounded px-2 py-1 text-xs font-bold uppercase text-gray-300 outline-none cursor-pointer">
+                    </select>
+                </div>
+                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest hidden md:block">kom.</div>
             </div>
             <div id="mainGrid" class="simple-grid">
 
@@ -78,19 +98,30 @@
     </main>
 
 
-    <div id="playerOverlay" class="fixed inset-0 bg-black z-[100] hidden flex-col">
-        <div class="p-4 flex items-center justify-between bg-black border-b border-white/5">
+    <div id="playerOverlay" class="fixed inset-0 bg-black z-[100] hidden flex flex-col">
+        <div class="p-4 flex items-center justify-between bg-black border-b border-white/5 flex-none">
             <button onclick="closePlayer()" class="flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest hover:text-red-500 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 Back
             </button>
             <div id="serverList" class="flex gap-2"></div>
         </div>
-        <div class="flex-grow relative bg-black">
-            <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black z-20">
-                <div class="w-10 h-10 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+        <div class="flex-grow flex overflow-hidden">
+            <div class="flex-grow relative bg-black h-full">
+                <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black z-20">
+                    <div class="w-10 h-10 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+                <iframe id="videoFrame" class="w-full h-full" allowfullscreen></iframe>
             </div>
-            <iframe id="videoFrame" class="w-full h-full" allowfullscreen></iframe>
+            <div id="episodeSidebar" class="hidden w-full md:w-80 bg-[#050505] border-l border-white/10 flex-col flex-none h-full overflow-hidden absolute md:relative right-0 z-30">
+                <div class="p-4 border-b border-white/10 flex items-center justify-between">
+                    <span class="font-bold text-sm uppercase">Episodes</span>
+                    <select id="seasonSelect" onchange="loadSeason(this.value)" class="bg-zinc-900 border border-white/20 rounded px-2 py-1 text-xs font-bold text-white outline-none cursor-pointer">
+                    </select>
+                </div>
+                <div id="episodeList" class="flex-grow overflow-y-auto p-2 space-y-2">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -101,10 +132,10 @@
 
 
         const SERVERS = [
-            { name: 'VidSrc Pro', url: (id, type) => `https://vidsrc.net/embed/${type}/${id}` },
-            { name: 'VidSrc Backup', url: (id, type) => `https://vidsrc.me/embed/${type}?tmdb=${id}` },
-            { name: 'MultiEmbed(recommended)', url: (id, type) => `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
-            { name: 'AutoEmbed', url: (id, type) => `https://autoembed.co/${type}/tmdb/${id}` }
+            { name: 'VidSrc Pro', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.net/embed/movie?tmdb=${id}` },
+            { name: 'VidSrc Backup', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+            { name: 'MultiEmbed(recommended)', url: (id, type, s=1, e=1) => type === 'tv' ? `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
+            { name: 'AutoEmbed', url: (id, type, s=1, e=1) => type === 'tv' ? `https://autoembed.co/tv/tmdb/${id}-${s}-${e}` : `https://autoembed.co/movie/tmdb/${id}` }
         ];
 
 
@@ -128,29 +159,75 @@
 
         let currentItem = null;
         let searchTimer;
+        let currentMode = 'trending';
+        let currentSeason = 1;
+        let currentEpisode = 1;
 
 
         window.onload = () => {
+            const yearSelect = document.getElementById('yearSelect');
+            const currentYear = new Date().getFullYear();
+            yearSelect.innerHTML = `<option value="">Select Year</option>`;
+            for(let i = currentYear; i >= 1950; i--) {
+                yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
+            }
             fetchDiscovery('trending', document.getElementById('nav-trending'));
         };
 
+        function handleSortChange() {
+            const sort = document.getElementById('sortSelect').value;
+            const yearSelect = document.getElementById('yearSelect');
+            if (sort === 'primary_release_date.desc') {
+                yearSelect.classList.remove('hidden');
+            } else {
+                yearSelect.classList.add('hidden');
+            }
+            applyFilters();
+        }
+
+        function applyFilters() {
+            fetchDiscovery(currentMode);
+        }
+
 
         async function fetchDiscovery(mode, element) {
+            currentMode = mode;
             const grid = document.getElementById('mainGrid');
             const title = document.getElementById('viewTitle');
             grid.innerHTML = '<div class="col-span-full py-20 flex justify-center"><div class="w-10 h-10 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div></div>';
 
             if (element) updateNav(element);
 
-            let url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}`;
-            title.textContent = "Trending Now";
+            const sort = document.getElementById('sortSelect').value;
+            const year = document.getElementById('yearSelect').value;
 
-            if (mode === 'movie') {
-                url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc&include_adult=false`;
-                title.textContent = "Movies";
-            } else if (mode === 'anime') {
-                url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc`;
-                title.textContent = "Anime";
+            const isTv = (mode === 'tv' || mode === 'anime');
+            const sortParam = sort === 'primary_release_date.desc' ? (isTv ? 'first_air_date.desc' : 'primary_release_date.desc') : sort;
+            const yearParam = isTv ? 'first_air_date_year' : 'primary_release_year';
+
+            let baseUrlEndpoint = isTv ? '/discover/tv' : '/discover/movie';
+            let url = '';
+
+            const titles = {
+                'trending': 'Trending Now',
+                'movie': 'Movies',
+                'tv': 'TV Shows',
+                'anime': 'Anime',
+                'action': 'Action Movies',
+                'comedy': 'Comedy Movies'
+            };
+            title.textContent = titles[mode] || 'Results';
+
+            // Override for trending API - apply filters correctly over the global database
+            if (mode === 'trending' && sort === 'popularity.desc' && !year) {
+                url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}`;
+            } else {
+                url = `${BASE_URL}${baseUrlEndpoint}?api_key=${API_KEY}&include_adult=false&sort_by=${sortParam}`;
+                if (year) url += `&${yearParam}=${year}`;
+
+                if (mode === 'anime') url += '&with_genres=16&with_original_language=ja';
+                if (mode === 'action') url += '&with_genres=28';
+                if (mode === 'comedy') url += '&with_genres=35';
             }
 
             try {
@@ -201,11 +278,13 @@
 
         function fallbackDiscovery(mode) {
             console.log("Using Offline Fallback Engine");
-            if (mode === 'movie') {
+            if (mode === 'movie' || mode === 'action' || mode === 'comedy') {
                 renderResults(FALLBACK_DATA.filter(i => i.media_type === 'movie'));
             } else if (mode === 'anime') {
                 const animeIds = [1071230, 94605, 129, 37854, 372058]; // Hardcoded top anime from fallback
                 renderResults(FALLBACK_DATA.filter(i => animeIds.includes(i.id)));
+            } else if (mode === 'tv') {
+                renderResults(FALLBACK_DATA.filter(i => i.media_type === 'tv'));
             } else {
                 renderResults(FALLBACK_DATA);
             }
@@ -268,14 +347,26 @@
 
         function playItem(item) {
             currentItem = item;
+            currentSeason = 1;
+            currentEpisode = 1;
             const overlay = document.getElementById('playerOverlay');
             const frame = document.getElementById('videoFrame');
             const serverList = document.getElementById('serverList');
+            const sidebar = document.getElementById('episodeSidebar');
 
             overlay.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
-            frame.src = SERVERS[0].url(item.id, item.type);
+            if (item.type === 'tv') {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('flex');
+                fetchSeasons(item.id);
+            } else {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('flex');
+            }
+
+            frame.src = SERVERS[0].url(item.id, item.type, currentSeason, currentEpisode);
 
             serverList.innerHTML = SERVERS.map((s, idx) => `
                 <button onclick="switchServer(${idx})" class="srv-btn px-4 py-1.5 bg-white/5 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition-all ${idx === 0 ? 'bg-red-600 text-white' : ''}">
@@ -287,10 +378,65 @@
             frame.onload = () => document.getElementById('playerLoader').classList.add('hidden');
         }
 
+        async function fetchSeasons(id) {
+            document.getElementById('episodeList').innerHTML = '<div class="text-center p-4 text-xs text-gray-500">Loading episodes...</div>';
+            try {
+                const res = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
+                const data = await res.json();
+                if (data.seasons) {
+                    const valid = data.seasons.filter(s => s.season_number > 0);
+                    document.getElementById('seasonSelect').innerHTML = valid.map(s => `<option value="${s.season_number}">Season ${s.season_number}</option>`).join('');
+                    if(valid.length > 0) {
+                        loadSeason(valid[0].season_number);
+                    }
+                }
+            } catch (e) {
+                document.getElementById('episodeList').innerHTML = '<div class="text-center p-4 text-xs text-red-500">Error loading episodes</div>';
+            }
+        }
+
+        async function loadSeason(season) {
+            currentSeason = season;
+            const list = document.getElementById('episodeList');
+            list.innerHTML = '<div class="text-center p-4 text-xs text-gray-500">Loading episodes...</div>';
+            try {
+                const res = await fetch(`${BASE_URL}/tv/${currentItem.id}/season/${season}?api_key=${API_KEY}`);
+                const data = await res.json();
+                if (data.episodes) {
+                    list.innerHTML = data.episodes.map(ep => `
+                        <div onclick="playEpisode(${ep.episode_number})" class="p-2 bg-white/5 hover:bg-white/10 cursor-pointer rounded-lg flex gap-3 group transition-colors border border-transparent hover:border-white/10">
+                            <div class="w-20 h-12 flex-none bg-black rounded overflow-hidden relative">
+                                <img src="${ep.still_path ? 'https://image.tmdb.org/t/p/w200'+ep.still_path : 'https://via.placeholder.com/200x112?text=No+Img'}" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <svg class="w-4 h-4 text-white fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="flex-grow min-w-0">
+                                <p class="text-[10px] font-bold text-white truncate">E${ep.episode_number}: ${ep.name}</p>
+                                <p class="text-[9px] text-gray-500 mt-0.5">${ep.runtime ? ep.runtime + 'm' : ''}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch(e) {
+                list.innerHTML = '<div class="text-center p-4 text-xs text-red-500">Error loading episodes</div>';
+            }
+        }
+
+        function playEpisode(epNum) {
+            currentEpisode = epNum;
+            const btns = Array.from(document.querySelectorAll('.srv-btn'));
+            let idx = btns.findIndex(b => b.classList.contains('bg-red-600'));
+            if(idx === -1) idx = 0;
+            const frame = document.getElementById('videoFrame');
+            document.getElementById('playerLoader').classList.remove('hidden');
+            frame.src = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
+        }
+
         function switchServer(idx) {
             const frame = document.getElementById('videoFrame');
             document.getElementById('playerLoader').classList.remove('hidden');
-            frame.src = SERVERS[idx].url(currentItem.id, currentItem.type);
+            frame.src = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
 
             document.querySelectorAll('.srv-btn').forEach((btn, i) => {
                 if(i === idx) {
