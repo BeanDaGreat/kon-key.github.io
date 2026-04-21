@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kon-Key Watch - Free Movies</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        .simple-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            .simple-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
+        }
+        .movie-card:hover img { transform: scale(1.05); filter: brightness(0.6); }
+        .movie-card:hover .play-icon { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        iframe { background: #000; border: none; }
+    </style>
+</head>
+<body class="selection:bg-red-600">
+
+
+    <aside class="fixed left-0 top-0 h-screen w-16 md:w-56 bg-black border-r border-white/10 z-50 flex flex-col">
+        <div class="p-4 md:p-6 mb-6 flex items-center gap-3">
+            <div class="w-8 h-8 bg-red-600 rounded flex items-center justify-center">
+                <svg class="w-4 h-4 text-white fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <h1 class="font-black text-lg tracking-tighter hidden md:block uppercase">Kon-Key Watch</h1>
+        </div>
+
+        <nav class="flex-grow px-2 space-y-2">
+            <button id="nav-trending" onclick="fetchDiscovery('trending', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl bg-red-600 text-white font-bold text-xs uppercase tracking-widest transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <span class="hidden md:block">Home</span>
+            </button>
+            <button id="nav-movie" onclick="fetchDiscovery('movie', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl text-gray-500 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>
+                <span class="hidden md:block">Movies</span>
+            </button>
+            <button id="nav-anime" onclick="fetchDiscovery('anime', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl text-gray-500 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="hidden md:block">Anime</span>
+            </button>
+        </nav>
+    </aside>
+
+
+    <main class="ml-16 md:ml-56 p-6 md:p-10">
+
+
+        <div class="mb-10 max-w-2xl relative">
+            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search Movies And More"
+                   class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm focus:outline-none focus:border-red-600 focus:bg-white/10 transition-all">
+            <div id="searchLoader" class="absolute right-4 top-1/2 -translate-y-1/2 hidden">
+                <div class="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        </div>
+
+
+        <div class="space-y-6">
+            <div class="flex items-center justify-between border-b border-white/5 pb-4">
+                <h2 id="viewTitle" class="text-2xl font-black uppercase tracking-tighter">Connecting</h2>
+                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">kom.</div>
+            </div>
+            <div id="mainGrid" class="simple-grid">
+
+            </div>
+        </div>
+    </main>
+
+
+    <div id="playerOverlay" class="fixed inset-0 bg-black z-[100] hidden flex-col">
+        <div class="p-4 flex items-center justify-between bg-black border-b border-white/5">
+            <button onclick="closePlayer()" class="flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest hover:text-red-500 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Back
+            </button>
+            <div id="serverList" class="flex gap-2"></div>
+        </div>
+        <div class="flex-grow relative bg-black">
+            <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black z-20">
+                <div class="w-10 h-10 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <iframe id="videoFrame" class="w-full h-full" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+
+        const API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+
+
+        const SERVERS = [
+            { name: 'VidSrc Pro', url: (id, type) => `https://vidsrc.net/embed/${type}/${id}` },
+            { name: 'VidSrc Backup', url: (id, type) => `https://vidsrc.me/embed/${type}?tmdb=${id}` },
+            { name: 'MultiEmbed', url: (id, type) => `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
+            { name: 'AutoEmbed', url: (id, type) => `https://autoembed.co/${type}/tmdb/${id}` }
+        ];
+
+
+        const FALLBACK_DATA = [
+            { id: 157336, media_type: "movie", title: "Interstellar", release_date: "2014-11-05", poster_path: "/gEU2QniE6E77NI6lCU6MxlSaba7.jpg" },
+            { id: 693134, media_type: "movie", title: "Dune: Part Two", release_date: "2024-02-27", poster_path: "/1pdfLvkbY9ohJlCjQH2JGjjcNsV.jpg" },
+            { id: 299534, media_type: "movie", title: "Avengers: Endgame", release_date: "2019-04-24", poster_path: "/or06FN3Dka5tukK1e9sl16pB3iy.jpg" },
+            { id: 1071230, media_type: "tv", name: "Cyberpunk: Edgerunners", first_air_date: "2022-09-13", poster_path: "/799Pui6Xel89796867r98as8.jpg" },
+            { id: 94605, media_type: "tv", name: "Arcane", first_air_date: "2021-11-06", poster_path: "/fqldWFuQ1pSztXkbCsC9g1nIRh7.jpg" },
+            { id: 37854, media_type: "tv", name: "One Piece", first_air_date: "1999-10-20", poster_path: "/cMD9Ypuv112XiH2bL46I362dONQ.jpg" },
+            { id: 1396, media_type: "tv", name: "Breaking Bad", first_air_date: "2008-01-20", poster_path: "/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg" },
+            { id: 335984, media_type: "movie", title: "Blade Runner 2049", release_date: "2017-10-04", poster_path: "/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg" },
+            { id: 129, media_type: "movie", title: "Spirited Away", release_date: "2001-07-20", poster_path: "/39wmItIWsg5sZMyRUHLkGH05Zba.jpg" },
+            { id: 550, media_type: "movie", title: "Fight Club", release_date: "1999-10-15", poster_path: "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg" },
+            { id: 27205, media_type: "movie", title: "Inception", release_date: "2010-07-15", poster_path: "/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg" },
+            { id: 872585, media_type: "movie", title: "Oppenheimer", release_date: "2023-07-19", poster_path: "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" },
+            { id: 113988, media_type: "tv", name: "Fallout", first_air_date: "2024-04-10", poster_path: "/A3szaJ2S9H1Rk1oG6R8y12T1v8v.jpg" },
+            { id: 372058, media_type: "movie", title: "Your Name.", release_date: "2016-08-26", poster_path: "/q719jXXEzOoYaps6babgKnONONX.jpg" },
+            { id: 414906, media_type: "movie", title: "The Batman", release_date: "2022-03-01", poster_path: "/74xTEgt7R36Fpooo50r9T25onhq.jpg" }
+        ];
+
+        let currentItem = null;
+        let searchTimer;
+
+
+        window.onload = () => {
+            fetchDiscovery('trending', document.getElementById('nav-trending'));
+        };
+
+
+        async function fetchDiscovery(mode, element) {
+            const grid = document.getElementById('mainGrid');
+            const title = document.getElementById('viewTitle');
+            grid.innerHTML = '<div class="col-span-full py-20 flex justify-center"><div class="w-10 h-10 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div></div>';
+
+            if (element) updateNav(element);
+
+            let url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}`;
+            title.textContent = "Trending Now";
+
+            if (mode === 'movie') {
+                url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc&include_adult=false`;
+                title.textContent = "Movies";
+            } else if (mode === 'anime') {
+                url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc`;
+                title.textContent = "Anime";
+            }
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.results && data.results.length > 0) {
+                    renderResults(data.results);
+                } else {
+                    fallbackDiscovery(mode);
+                }
+            } catch (e) {
+                fallbackDiscovery(mode);
+            }
+        }
+
+
+        async function handleSearch(query) {
+            const grid = document.getElementById('mainGrid');
+            if (query.length === 0) {
+                fetchDiscovery('trending', document.getElementById('nav-trending'));
+                return;
+            }
+            if (query.length < 2) return;
+
+            const loader = document.getElementById('searchLoader');
+            loader.classList.remove('hidden');
+
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(async () => {
+                try {
+                    const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`);
+                    const data = await res.json();
+                    document.getElementById('viewTitle').textContent = `Search: ${query}`;
+
+                    if (data.results && data.results.length > 0) {
+                        renderResults(data.results);
+                    } else {
+                        fallbackSearch(query);
+                    }
+                } catch (e) {
+                    fallbackSearch(query);
+                }
+                loader.classList.add('hidden');
+            }, 400);
+        }
+
+
+        function fallbackDiscovery(mode) {
+            console.log("Using Offline Fallback Engine");
+            if (mode === 'movie') {
+                renderResults(FALLBACK_DATA.filter(i => i.media_type === 'movie'));
+            } else if (mode === 'anime') {
+                const animeIds = [1071230, 94605, 129, 37854, 372058]; // Hardcoded top anime from fallback
+                renderResults(FALLBACK_DATA.filter(i => animeIds.includes(i.id)));
+            } else {
+                renderResults(FALLBACK_DATA);
+            }
+        }
+
+        function fallbackSearch(query) {
+            const lowerQuery = query.toLowerCase();
+            const matches = FALLBACK_DATA.filter(item => {
+                const title = (item.title || item.name || "").toLowerCase();
+                return title.includes(lowerQuery);
+            });
+
+            if (matches.length > 0) {
+                document.getElementById('viewTitle').textContent = `Search Results: ${query}`;
+                renderResults(matches);
+            } else {
+                document.getElementById('viewTitle').textContent = `No exact match. Showing Recommendations:`;
+                renderResults(FALLBACK_DATA);
+            }
+        }
+
+
+        function renderResults(results) {
+            const grid = document.getElementById('mainGrid');
+
+            const validResults = results.filter(i => i && (i.poster_path || i.backdrop_path) && (i.media_type !== 'person'));
+
+            if (validResults.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center text-gray-500 py-20 uppercase text-xs font-bold tracking-widest">Database Error: Cannot retrieve titles.</p>';
+                return;
+            }
+
+            grid.innerHTML = validResults.map(item => {
+                const title = item.title || item.name || "Unknown Title";
+                const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+                const year = (item.release_date || item.first_air_date || '').split('-')[0] || 'N/A';
+                const poster = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image';
+
+                return `
+                    <div class="movie-card relative cursor-pointer group" onclick='playItem(${JSON.stringify({id: item.id, type, title}).replace(/'/g, "&apos;")})'>
+                        <div class="aspect-[2/3] rounded-xl overflow-hidden bg-zinc-900 relative shadow-2xl">
+                            <img src="${poster}" class="w-full h-full object-cover transition-all duration-500 group-hover:scale-110">
+                            <div class="play-icon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 scale-50 transition-all duration-300 pointer-events-none">
+                                <div class="w-14 h-14 bg-red-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(220,38,38,0.5)]">
+                                    <svg class="w-6 h-6 fill-current text-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 px-1">
+                            <h4 class="text-[11px] font-black truncate uppercase tracking-tight text-white">${title}</h4>
+                            <div class="flex justify-between items-center mt-1">
+                                <span class="text-[9px] text-gray-500 font-bold tracking-tighter">${year}</span>
+                                <span class="text-[8px] bg-white/10 px-1.5 py-0.5 rounded text-gray-300 font-black uppercase">${type}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function playItem(item) {
+            currentItem = item;
+            const overlay = document.getElementById('playerOverlay');
+            const frame = document.getElementById('videoFrame');
+            const serverList = document.getElementById('serverList');
+
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            frame.src = SERVERS[0].url(item.id, item.type);
+
+            serverList.innerHTML = SERVERS.map((s, idx) => `
+                <button onclick="switchServer(${idx})" class="srv-btn px-4 py-1.5 bg-white/5 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition-all ${idx === 0 ? 'bg-red-600 text-white' : ''}">
+                    ${s.name}
+                </button>
+            `).join('');
+
+            document.getElementById('playerLoader').classList.remove('hidden');
+            frame.onload = () => document.getElementById('playerLoader').classList.add('hidden');
+        }
+
+        function switchServer(idx) {
+            const frame = document.getElementById('videoFrame');
+            document.getElementById('playerLoader').classList.remove('hidden');
+            frame.src = SERVERS[idx].url(currentItem.id, currentItem.type);
+
+            document.querySelectorAll('.srv-btn').forEach((btn, i) => {
+                if(i === idx) {
+                    btn.classList.add('bg-red-600', 'text-white');
+                    btn.classList.remove('bg-white/5');
+                } else {
+                    btn.classList.remove('bg-red-600', 'text-white');
+                    btn.classList.add('bg-white/5');
+                }
+            });
+        }
+
+        function closePlayer() {
+            document.getElementById('playerOverlay').classList.add('hidden');
+            document.getElementById('videoFrame').src = "";
+            document.body.style.overflow = 'auto';
+        }
+
+        function updateNav(element) {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-red-600', 'text-white');
+                btn.classList.add('text-gray-500');
+            });
+            element.classList.add('bg-red-600', 'text-white');
+            element.classList.remove('text-gray-500');
+        }
+    </script>
+</body>
+</html>
