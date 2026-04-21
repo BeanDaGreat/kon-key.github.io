@@ -132,10 +132,10 @@
 
 
         const SERVERS = [
-            { name: 'VidSrc Pro', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.net/embed/movie?tmdb=${id}` },
-            { name: 'VidSrc Backup', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-            { name: 'MultiEmbed(recommended)', url: (id, type, s=1, e=1) => type === 'tv' ? `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
-            { name: 'AutoEmbed', url: (id, type, s=1, e=1) => type === 'tv' ? `https://autoembed.co/tv/tmdb/${id}-${s}-${e}` : `https://autoembed.co/movie/tmdb/${id}` }
+            { name: 'Server 1', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.net/embed/movie?tmdb=${id}` },
+            { name: 'Server 2', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+            { name: 'Server 3', url: (id, type, s=1, e=1) => type === 'tv' ? `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
+            { name: 'Server 3', url: (id, type, s=1, e=1) => type === 'tv' ? `https://autoembed.co/tv/tmdb/${id}-${s}-${e}` : `https://autoembed.co/movie/tmdb/${id}` }
         ];
 
 
@@ -209,16 +209,16 @@
             let url = '';
 
             const titles = {
-                'trending': 'Trending Now',
+                'trending': 'Trending',
                 'movie': 'Movies',
                 'tv': 'TV Shows',
                 'anime': 'Anime',
-                'action': 'Action Movies',
-                'comedy': 'Comedy Movies'
+                'action': 'Action',
+                'comedy': 'Comedy'
             };
             title.textContent = titles[mode] || 'Results';
 
-            // Override for trending API - apply filters correctly over the global database
+            
             if (mode === 'trending' && sort === 'popularity.desc' && !year) {
                 url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}`;
             } else {
