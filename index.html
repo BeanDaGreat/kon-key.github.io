@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kon-Key Watch - peak.peak</title>
+    <title>Kon-Key Watch | looolllllll...</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #000;
             color: #fff;
             overflow-x: hidden;
@@ -16,452 +16,271 @@
         .simple-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 1rem;
+            gap: 1.5rem;
         }
         @media (min-width: 768px) {
-            .simple-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
+            .simple-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
         }
-        .movie-card:hover img { transform: scale(1.05); filter: brightness(0.6); }
-        .movie-card:hover .play-icon { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        iframe { background: #000; border: none; }
+        .movie-card:hover img { filter: brightness(0.5); transform: scale(1.05); }
+        .nav-active { 
+            background: linear-gradient(135deg, rgba(190, 242, 100, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border-right: 3px solid #bef264;
+            color: #bef264 !important; 
+        }
+        .lime-gradient { background: linear-gradient(135deg, #bef264 0%, #10b981 100%); }
+        .lime-text { color: #bef264; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeIn 0.4s ease forwards; }
+        
+        iframe { border: none; background: #000; }
+        select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1rem; padding-right: 2rem; }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #bef264; }
     </style>
 </head>
-<body class="selection:bg-red-600">
+<body class="selection:bg-lime-500 selection:text-black">
 
-
-    <aside class="fixed left-0 top-0 h-screen w-16 md:w-56 bg-black border-r border-white/10 z-50 flex flex-col">
-        <div class="p-4 md:p-6 mb-6 flex items-center gap-3">
-            <div class="w-8 h-8 bg-red-600 rounded flex items-center justify-center">
-                <svg class="w-4 h-4 text-white fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    <!-- Sidebar Navigation -->
+    <aside class="fixed left-0 top-0 h-screen w-16 md:w-60 bg-black border-r border-white/10 z-[60] flex flex-col">
+        <div class="p-4 md:p-6 mb-4 flex items-center gap-3">
+            <div class="w-8 h-8 lime-gradient rounded flex items-center justify-center flex-none">
+                <svg class="w-4 h-4 text-black fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
-            <h1 class="font-black text-lg tracking-tighter hidden md:block uppercase">Kon-Key Watch</h1>
+            <h1 class="text-sm font-extrabold uppercase italic tracking-tighter hidden md:block">Kon-Key <span class="lime-text">Watch</span></h1>
         </div>
 
-        <nav class="flex-grow px-2 space-y-2">
-            <button id="nav-trending" onclick="fetchDiscovery('trending', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl bg-red-600 text-white font-bold text-xs uppercase tracking-widest transition-all">
+        <nav class="flex-grow px-2 space-y-1">
+            <button id="btn-trending" onclick="fetchDiscovery('trending', this)" class="nav-btn nav-active w-full flex items-center gap-4 p-4 rounded-lg text-gray-500 font-bold text-[10px] uppercase tracking-widest transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                 <span class="hidden md:block">Trending</span>
             </button>
-            <button id="nav-movie" onclick="fetchDiscovery('movie', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl text-gray-500 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
+            <button id="btn-movie" onclick="fetchDiscovery('movie', this)" class="nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-gray-500 hover:text-white font-bold text-[10px] uppercase tracking-widest transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>
                 <span class="hidden md:block">Movies</span>
             </button>
-            <button id="nav-anime" onclick="fetchDiscovery('anime', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl text-gray-500 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
+            <button id="btn-tv" onclick="fetchDiscovery('tv', this)" class="nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-gray-500 hover:text-white font-bold text-[10px] uppercase tracking-widest transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2-2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span class="hidden md:block">Series</span>
+            </button>
+            <button id="btn-animation" onclick="fetchDiscovery('animation', this)" class="nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-gray-500 hover:text-white font-bold text-[10px] uppercase tracking-widest transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span class="hidden md:block">Anime</span>
-            </button>
-            <button id="nav-tv" onclick="fetchDiscovery('tv', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl text-gray-500 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <span class="hidden md:block">TV Shows</span>
-            </button>
-            <button id="nav-action" onclick="fetchDiscovery('action', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl text-gray-500 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                <span class="hidden md:block">Action</span>
-            </button>
-            <button id="nav-comedy" onclick="fetchDiscovery('comedy', this)" class="nav-btn w-full flex items-center gap-4 p-3 rounded-xl text-gray-500 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span class="hidden md:block">Comedy</span>
+                <span class="hidden md:block">Animation</span>
             </button>
         </nav>
     </aside>
 
-
-    <main class="ml-16 md:ml-56 p-6 md:p-10">
-
-
+    <!-- Main Content Area -->
+    <main class="ml-16 md:ml-60 p-6 md:p-10">
+        <!-- Search Bar -->
         <div class="mb-10 max-w-2xl relative">
-            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search Movies And More"
-                   class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm focus:outline-none focus:border-red-600 focus:bg-white/10 transition-all">
+            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search for titles..."
+                   class="w-full bg-zinc-900 border border-white/5 rounded-xl py-3 px-6 text-sm focus:outline-none focus:border-lime-500/50 transition-all">
             <div id="searchLoader" class="absolute right-4 top-1/2 -translate-y-1/2 hidden">
-                <div class="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                <div class="w-4 h-4 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
         </div>
 
-
-        <div class="space-y-6">
-            <div class="flex items-center justify-between border-b border-white/5 pb-4 flex-wrap gap-2">
-                <div class="flex items-center gap-4">
-                    <h2 id="viewTitle" class="text-2xl font-black uppercase tracking-tighter">Connecting</h2>
-                    <select id="sortSelect" onchange="handleSortChange()" class="bg-zinc-900 border border-white/20 rounded px-2 py-1 text-xs font-bold uppercase text-gray-300 outline-none cursor-pointer">
+        <!-- Controls -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-white/5 pb-6">
+            <h2 id="viewTitle" class="text-lg font-extrabold uppercase tracking-widest lime-text">Trending</h2>
+            
+            <div class="flex items-center gap-4">
+                <div class="flex flex-col">
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-tighter mb-1">Sort</span>
+                    <select id="sortSelect" onchange="applyFilters()" class="bg-zinc-950 border border-white/10 rounded px-3 py-1 text-[10px] font-bold uppercase text-gray-300 outline-none cursor-pointer">
                         <option value="popularity.desc">Popularity</option>
-                        <option value="primary_release_date.desc">Year</option>
-                    </select>
-                    <select id="yearSelect" onchange="applyFilters()" class="hidden bg-zinc-900 border border-white/20 rounded px-2 py-1 text-xs font-bold uppercase text-gray-300 outline-none cursor-pointer">
+                        <option value="release_date.desc">Newest</option>
+                        <option value="vote_average.desc">Rating</option>
                     </select>
                 </div>
-                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest hidden md:block">kom.</div>
+                <div class="flex flex-col">
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-tighter mb-1">Genre</span>
+                    <select id="genreSelect" onchange="applyFilters()" class="bg-zinc-950 border border-white/10 rounded px-3 py-1 text-[10px] font-bold uppercase text-gray-300 outline-none cursor-pointer">
+                        <option value="">All Genres</option>
+                    </select>
+                </div>
             </div>
-            <div id="mainGrid" class="simple-grid">
+        </div>
 
-            </div>
+        <div id="mainGrid" class="simple-grid">
+            <!-- Grid Content Injected Here -->
         </div>
     </main>
 
-
-    <div id="playerOverlay" class="fixed inset-0 bg-black z-[100] hidden flex flex-col">
-        <div class="p-4 flex items-center justify-between bg-black border-b border-white/5 flex-none">
-            <button onclick="closePlayer()" class="flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest hover:text-red-500 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Back
+    <!-- Player Overlay -->
+    <div id="playerOverlay" class="fixed inset-0 bg-black z-[100] hidden flex-col">
+        <div class="p-4 flex items-center justify-between border-b border-white/5">
+            <button onclick="closePlayer()" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-lime-400 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Exit Player
             </button>
             <div id="serverList" class="flex gap-2"></div>
         </div>
-        <div class="flex-grow flex overflow-hidden">
-            <div class="flex-grow relative bg-black h-full">
-                <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black z-20">
-                    <div class="w-10 h-10 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+        <div class="flex-grow flex flex-col md:flex-row overflow-hidden">
+            <div class="flex-grow bg-black relative">
+                <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black">
+                    <div class="w-10 h-10 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
                 <iframe id="videoFrame" class="w-full h-full" allowfullscreen></iframe>
             </div>
-            <div id="episodeSidebar" class="hidden w-full md:w-80 bg-[#050505] border-l border-white/10 flex-col flex-none h-full overflow-hidden absolute md:relative right-0 z-30">
-                <div class="p-4 border-b border-white/10 flex items-center justify-between">
-                    <span class="font-bold text-sm uppercase">Episodes</span>
-                    <select id="seasonSelect" onchange="loadSeason(this.value)" class="bg-zinc-900 border border-white/20 rounded px-2 py-1 text-xs font-bold text-white outline-none cursor-pointer">
-                    </select>
+            <div id="episodeSidebar" class="hidden w-full md:w-80 bg-zinc-950 border-l border-white/5 flex-col overflow-y-auto p-4">
+                <div class="mb-4">
+                    <label class="text-[9px] font-bold text-gray-500 uppercase block mb-1">Select Season</label>
+                    <select id="seasonSelect" onchange="loadSeason(this.value)" class="w-full bg-zinc-900 text-xs font-bold text-white p-2 rounded outline-none border border-white/10"></select>
                 </div>
-                <div id="episodeList" class="flex-grow overflow-y-auto p-2 space-y-2">
-                </div>
+                <div id="episodeList" class="space-y-2"></div>
             </div>
         </div>
     </div>
 
     <script>
-
         const API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb';
         const BASE_URL = 'https://api.themoviedb.org/3';
-
-
         const SERVERS = [
-            { name: 'VidSrc Pro', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.net/embed/movie?tmdb=${id}` },
-            { name: 'VidSrc Backup', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-            { name: 'MultiEmbed(recommended)', url: (id, type, s=1, e=1) => type === 'tv' ? `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
-            { name: 'AutoEmbed', url: (id, type, s=1, e=1) => type === 'tv' ? `https://autoembed.co/tv/tmdb/${id}-${s}-${e}` : `https://autoembed.co/movie/tmdb/${id}` }
+            { name: 'Server 1', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.net/embed/movie?tmdb=${id}` },
+            { name: 'Server 2', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` }
         ];
 
+        let currentItem = null, searchTimer, currentMode = 'trending', currentSeason = 1, currentEpisode = 1;
 
-        const FALLBACK_DATA = [
-            { id: 157336, media_type: "movie", title: "Interstellar", release_date: "2014-11-05", poster_path: "/gEU2QniE6E77NI6lCU6MxlSaba7.jpg" },
-            { id: 693134, media_type: "movie", title: "Dune: Part Two", release_date: "2024-02-27", poster_path: "/1pdfLvkbY9ohJlCjQH2JGjjcNsV.jpg" },
-            { id: 299534, media_type: "movie", title: "Avengers: Endgame", release_date: "2019-04-24", poster_path: "/or06FN3Dka5tukK1e9sl16pB3iy.jpg" },
-            { id: 1071230, media_type: "tv", name: "Cyberpunk: Edgerunners", first_air_date: "2022-09-13", poster_path: "/799Pui6Xel89796867r98as8.jpg" },
-            { id: 94605, media_type: "tv", name: "Arcane", first_air_date: "2021-11-06", poster_path: "/fqldWFuQ1pSztXkbCsC9g1nIRh7.jpg" },
-            { id: 37854, media_type: "tv", name: "One Piece", first_air_date: "1999-10-20", poster_path: "/cMD9Ypuv112XiH2bL46I362dONQ.jpg" },
-            { id: 1396, media_type: "tv", name: "Breaking Bad", first_air_date: "2008-01-20", poster_path: "/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg" },
-            { id: 335984, media_type: "movie", title: "Blade Runner 2049", release_date: "2017-10-04", poster_path: "/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg" },
-            { id: 129, media_type: "movie", title: "Spirited Away", release_date: "2001-07-20", poster_path: "/39wmItIWsg5sZMyRUHLkGH05Zba.jpg" },
-            { id: 550, media_type: "movie", title: "Fight Club", release_date: "1999-10-15", poster_path: "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg" },
-            { id: 27205, media_type: "movie", title: "Inception", release_date: "2010-07-15", poster_path: "/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg" },
-            { id: 872585, media_type: "movie", title: "Oppenheimer", release_date: "2023-07-19", poster_path: "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" },
-            { id: 113988, media_type: "tv", name: "Fallout", first_air_date: "2024-04-10", poster_path: "/A3szaJ2S9H1Rk1oG6R8y12T1v8v.jpg" },
-            { id: 372058, media_type: "movie", title: "Your Name.", release_date: "2016-08-26", poster_path: "/q719jXXEzOoYaps6babgKnONONX.jpg" },
-            { id: 414906, media_type: "movie", title: "The Batman", release_date: "2022-03-01", poster_path: "/74xTEgt7R36Fpooo50r9T25onhq.jpg" }
-        ];
-
-        let currentItem = null;
-        let searchTimer;
-        let currentMode = 'trending';
-        let currentSeason = 1;
-        let currentEpisode = 1;
-
-
-        window.onload = () => {
-            const yearSelect = document.getElementById('yearSelect');
-            const currentYear = new Date().getFullYear();
-            yearSelect.innerHTML = `<option value="">Select Year</option>`;
-            for(let i = currentYear; i >= 1950; i--) {
-                yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
-            }
-            fetchDiscovery('trending', document.getElementById('nav-trending'));
+        window.onload = async () => {
+            try {
+                const res = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
+                const data = await res.json();
+                const select = document.getElementById('genreSelect');
+                (data.genres || []).forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g.id;
+                    opt.textContent = g.name;
+                    select.appendChild(opt);
+                });
+            } catch (e) { console.error("Genre load error", e); }
+            fetchDiscovery('trending', document.getElementById('btn-trending'));
         };
 
-        function handleSortChange() {
-            const sort = document.getElementById('sortSelect').value;
-            const yearSelect = document.getElementById('yearSelect');
-            if (sort === 'primary_release_date.desc') {
-                yearSelect.classList.remove('hidden');
-            } else {
-                yearSelect.classList.add('hidden');
-            }
-            applyFilters();
-        }
-
-        function applyFilters() {
-            fetchDiscovery(currentMode);
-        }
-
+        function applyFilters() { fetchDiscovery(currentMode); }
 
         async function fetchDiscovery(mode, element) {
+            if (element) {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
+                element.classList.add('nav-active');
+            }
             currentMode = mode;
             const grid = document.getElementById('mainGrid');
-            const title = document.getElementById('viewTitle');
-            grid.innerHTML = '<div class="col-span-full py-20 flex justify-center"><div class="w-10 h-10 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div></div>';
-
-            if (element) updateNav(element);
-
+            const genre = document.getElementById('genreSelect').value;
             const sort = document.getElementById('sortSelect').value;
-            const year = document.getElementById('yearSelect').value;
+            
+            grid.innerHTML = '<div class="col-span-full py-20 flex justify-center"><div class="w-8 h-8 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div></div>';
 
-            const isTv = (mode === 'tv' || mode === 'anime');
-            const sortParam = sort === 'primary_release_date.desc' ? (isTv ? 'first_air_date.desc' : 'primary_release_date.desc') : sort;
-            const yearParam = isTv ? 'first_air_date_year' : 'primary_release_year';
-
-            let baseUrlEndpoint = isTv ? '/discover/tv' : '/discover/movie';
             let url = '';
-
-            const titles = {
-                'trending': 'Trending Now',
-                'movie': 'Movies',
-                'tv': 'TV Shows',
-                'anime': 'Anime',
-                'action': 'Action Movies',
-                'comedy': 'Comedy Movies'
-            };
-            title.textContent = titles[mode] || 'Results';
-
-            // Override for trending API - apply filters correctly over the global database
-            if (mode === 'trending' && sort === 'popularity.desc' && !year) {
-                url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}`;
+            const isTv = (mode === 'tv' || mode === 'animation');
+            
+            if (mode === 'trending' && !genre && sort === 'popularity.desc') {
+                url = `${BASE_URL}/trending/all/day?api_key=${API_KEY}`;
             } else {
-                url = `${BASE_URL}${baseUrlEndpoint}?api_key=${API_KEY}&include_adult=false&sort_by=${sortParam}`;
-                if (year) url += `&${yearParam}=${year}`;
-
-                if (mode === 'anime') url += '&with_genres=16&with_original_language=ja';
-                if (mode === 'action') url += '&with_genres=28';
-                if (mode === 'comedy') url += '&with_genres=35';
+                url = `${BASE_URL}/discover/${isTv ? 'tv' : 'movie'}?api_key=${API_KEY}&sort_by=${sort}&include_adult=false`;
+                if (genre) url += `&with_genres=${genre}`;
+                if (mode === 'animation') url += `&with_genres=16`;
             }
 
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-
-                if (data.results && data.results.length > 0) {
-                    renderResults(data.results);
-                } else {
-                    fallbackDiscovery(mode);
-                }
-            } catch (e) {
-                fallbackDiscovery(mode);
-            }
+                render(data.results || []);
+                document.getElementById('viewTitle').textContent = mode.toUpperCase();
+            } catch (e) { grid.innerHTML = '<p class="text-red-500 uppercase text-xs font-bold text-center col-span-full">Failed to fetch data</p>'; }
         }
 
-
-        async function handleSearch(query) {
-            const grid = document.getElementById('mainGrid');
-            if (query.length === 0) {
-                fetchDiscovery('trending', document.getElementById('nav-trending'));
-                return;
-            }
-            if (query.length < 2) return;
-
+        async function handleSearch(q) {
+            if (!q) return fetchDiscovery(currentMode);
             const loader = document.getElementById('searchLoader');
             loader.classList.remove('hidden');
-
             clearTimeout(searchTimer);
             searchTimer = setTimeout(async () => {
                 try {
-                    const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`);
+                    const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(q)}&include_adult=false`);
                     const data = await res.json();
-                    document.getElementById('viewTitle').textContent = `Search: ${query}`;
-
-                    if (data.results && data.results.length > 0) {
-                        renderResults(data.results);
-                    } else {
-                        fallbackSearch(query);
-                    }
-                } catch (e) {
-                    fallbackSearch(query);
-                }
+                    render(data.results || []);
+                } catch (e) { console.error(e); }
                 loader.classList.add('hidden');
-            }, 400);
+            }, 500);
         }
 
-
-        function fallbackDiscovery(mode) {
-            console.log("Using Offline Fallback Engine");
-            if (mode === 'movie' || mode === 'action' || mode === 'comedy') {
-                renderResults(FALLBACK_DATA.filter(i => i.media_type === 'movie'));
-            } else if (mode === 'anime') {
-                const animeIds = [1071230, 94605, 129, 37854, 372058]; // Hardcoded top anime from fallback
-                renderResults(FALLBACK_DATA.filter(i => animeIds.includes(i.id)));
-            } else if (mode === 'tv') {
-                renderResults(FALLBACK_DATA.filter(i => i.media_type === 'tv'));
-            } else {
-                renderResults(FALLBACK_DATA);
-            }
-        }
-
-        function fallbackSearch(query) {
-            const lowerQuery = query.toLowerCase();
-            const matches = FALLBACK_DATA.filter(item => {
-                const title = (item.title || item.name || "").toLowerCase();
-                return title.includes(lowerQuery);
-            });
-
-            if (matches.length > 0) {
-                document.getElementById('viewTitle').textContent = `Search Results: ${query}`;
-                renderResults(matches);
-            } else {
-                document.getElementById('viewTitle').textContent = `No exact match. Showing Recommendations:`;
-                renderResults(FALLBACK_DATA);
-            }
-        }
-
-
-        function renderResults(results) {
+        function render(items) {
             const grid = document.getElementById('mainGrid');
-
-            const validResults = results.filter(i => i && (i.poster_path || i.backdrop_path) && (i.media_type !== 'person'));
-
-            if (validResults.length === 0) {
-                grid.innerHTML = '<p class="col-span-full text-center text-gray-500 py-20 uppercase text-xs font-bold tracking-widest">Database Error: Cannot retrieve titles.</p>';
+            const filtered = items.filter(i => i.poster_path && i.media_type !== 'person');
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p class="text-gray-500 uppercase text-[10px] font-bold text-center col-span-full py-20 tracking-widest">No results found</p>';
                 return;
             }
-
-            grid.innerHTML = validResults.map(item => {
-                const title = item.title || item.name || "Unknown Title";
-                const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
-                const year = (item.release_date || item.first_air_date || '').split('-')[0] || 'N/A';
-                const poster = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image';
-
-                return `
-                    <div class="movie-card relative cursor-pointer group" onclick='playItem(${JSON.stringify({id: item.id, type, title}).replace(/'/g, "&apos;")})'>
-                        <div class="aspect-[2/3] rounded-xl overflow-hidden bg-zinc-900 relative shadow-2xl">
-                            <img src="${poster}" class="w-full h-full object-cover transition-all duration-500 group-hover:scale-110">
-                            <div class="play-icon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 scale-50 transition-all duration-300 pointer-events-none">
-                                <div class="w-14 h-14 bg-red-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(220,38,38,0.5)]">
-                                    <svg class="w-6 h-6 fill-current text-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-3 px-1">
-                            <h4 class="text-[11px] font-black truncate uppercase tracking-tight text-white">${title}</h4>
-                            <div class="flex justify-between items-center mt-1">
-                                <span class="text-[9px] text-gray-500 font-bold tracking-tighter">${year}</span>
-                                <span class="text-[8px] bg-white/10 px-1.5 py-0.5 rounded text-gray-300 font-black uppercase">${type}</span>
-                            </div>
-                        </div>
+            grid.innerHTML = filtered.map((item, idx) => `
+                <div class="movie-card animate-in cursor-pointer group" style="animation-delay:${idx*0.02}s" onclick='playItem(${JSON.stringify({id: item.id, type: item.media_type || (item.first_air_date ? 'tv' : 'movie'), title: item.title || item.name}).replace(/'/g, "&apos;")})'>
+                    <div class="aspect-[2/3] rounded-xl overflow-hidden bg-zinc-900 border border-white/5 transition-all shadow-lg">
+                        <img src="https://image.tmdb.org/t/p/w342${item.poster_path}" class="w-full h-full object-cover transition-transform duration-500" loading="lazy">
                     </div>
-                `;
-            }).join('');
+                    <div class="mt-3">
+                        <h4 class="text-[11px] font-extrabold truncate uppercase tracking-tight group-hover:lime-text transition-colors">${item.title || item.name}</h4>
+                        <p class="text-[9px] text-gray-500 font-bold mt-1 uppercase">${(item.release_date || item.first_air_date || '').split('-')[0] || 'N/A'}</p>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function playItem(item) {
             currentItem = item;
-            currentSeason = 1;
-            currentEpisode = 1;
-            const overlay = document.getElementById('playerOverlay');
-            const frame = document.getElementById('videoFrame');
-            const serverList = document.getElementById('serverList');
-            const sidebar = document.getElementById('episodeSidebar');
-
-            overlay.classList.remove('hidden');
+            document.getElementById('playerOverlay').classList.remove('hidden');
+            document.getElementById('playerOverlay').classList.add('flex');
             document.body.style.overflow = 'hidden';
 
             if (item.type === 'tv') {
-                sidebar.classList.remove('hidden');
-                sidebar.classList.add('flex');
+                document.getElementById('episodeSidebar').classList.replace('hidden', 'flex');
                 fetchSeasons(item.id);
             } else {
-                sidebar.classList.add('hidden');
-                sidebar.classList.remove('flex');
+                document.getElementById('episodeSidebar').classList.replace('flex', 'hidden');
             }
-
-            frame.src = SERVERS[0].url(item.id, item.type, currentSeason, currentEpisode);
-
-            serverList.innerHTML = SERVERS.map((s, idx) => `
-                <button onclick="switchServer(${idx})" class="srv-btn px-4 py-1.5 bg-white/5 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition-all ${idx === 0 ? 'bg-red-600 text-white' : ''}">
-                    ${s.name}
-                </button>
-            `).join('');
-
-            document.getElementById('playerLoader').classList.remove('hidden');
-            frame.onload = () => document.getElementById('playerLoader').classList.add('hidden');
+            switchServer(0);
         }
 
         async function fetchSeasons(id) {
-            document.getElementById('episodeList').innerHTML = '<div class="text-center p-4 text-xs text-gray-500">Loading episodes...</div>';
-            try {
-                const res = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
-                const data = await res.json();
-                if (data.seasons) {
-                    const valid = data.seasons.filter(s => s.season_number > 0);
-                    document.getElementById('seasonSelect').innerHTML = valid.map(s => `<option value="${s.season_number}">Season ${s.season_number}</option>`).join('');
-                    if(valid.length > 0) {
-                        loadSeason(valid[0].season_number);
-                    }
-                }
-            } catch (e) {
-                document.getElementById('episodeList').innerHTML = '<div class="text-center p-4 text-xs text-red-500">Error loading episodes</div>';
-            }
+            const res = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
+            const data = await res.json();
+            const s = (data.seasons || []).filter(v => v.season_number > 0);
+            document.getElementById('seasonSelect').innerHTML = s.map(v => `<option value="${v.season_number}">Season ${v.season_number}</option>`).join('');
+            if(s.length) loadSeason(s[0].season_number);
         }
 
-        async function loadSeason(season) {
-            currentSeason = season;
-            const list = document.getElementById('episodeList');
-            list.innerHTML = '<div class="text-center p-4 text-xs text-gray-500">Loading episodes...</div>';
-            try {
-                const res = await fetch(`${BASE_URL}/tv/${currentItem.id}/season/${season}?api_key=${API_KEY}`);
-                const data = await res.json();
-                if (data.episodes) {
-                    list.innerHTML = data.episodes.map(ep => `
-                        <div onclick="playEpisode(${ep.episode_number})" class="p-2 bg-white/5 hover:bg-white/10 cursor-pointer rounded-lg flex gap-3 group transition-colors border border-transparent hover:border-white/10">
-                            <div class="w-20 h-12 flex-none bg-black rounded overflow-hidden relative">
-                                <img src="${ep.still_path ? 'https://image.tmdb.org/t/p/w200'+ep.still_path : 'https://via.placeholder.com/200x112?text=No+Img'}" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <svg class="w-4 h-4 text-white fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                </div>
-                            </div>
-                            <div class="flex-grow min-w-0">
-                                <p class="text-[10px] font-bold text-white truncate">E${ep.episode_number}: ${ep.name}</p>
-                                <p class="text-[9px] text-gray-500 mt-0.5">${ep.runtime ? ep.runtime + 'm' : ''}</p>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-            } catch(e) {
-                list.innerHTML = '<div class="text-center p-4 text-xs text-red-500">Error loading episodes</div>';
-            }
+        async function loadSeason(s) {
+            currentSeason = s;
+            const res = await fetch(`${BASE_URL}/tv/${currentItem.id}/season/${s}?api_key=${API_KEY}`);
+            const data = await res.json();
+            document.getElementById('episodeList').innerHTML = (data.episodes || []).map(ep => `
+                <div onclick="playEpisode(${ep.episode_number})" class="text-[10px] font-bold p-3 bg-white/5 hover:bg-lime-500/10 cursor-pointer rounded-lg transition-all flex items-center gap-3">
+                    <span class="text-lime-500 font-black">E${ep.episode_number}</span>
+                    <span class="truncate text-gray-300">${ep.name}</span>
+                </div>
+            `).join('');
         }
 
-        function playEpisode(epNum) {
-            currentEpisode = epNum;
-            const btns = Array.from(document.querySelectorAll('.srv-btn'));
-            let idx = btns.findIndex(b => b.classList.contains('bg-red-600'));
-            if(idx === -1) idx = 0;
-            const frame = document.getElementById('videoFrame');
-            document.getElementById('playerLoader').classList.remove('hidden');
-            frame.src = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
-        }
+        function playEpisode(e) { currentEpisode = e; switchServer(0); }
 
         function switchServer(idx) {
             const frame = document.getElementById('videoFrame');
             document.getElementById('playerLoader').classList.remove('hidden');
             frame.src = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
-
-            document.querySelectorAll('.srv-btn').forEach((btn, i) => {
-                if(i === idx) {
-                    btn.classList.add('bg-red-600', 'text-white');
-                    btn.classList.remove('bg-white/5');
-                } else {
-                    btn.classList.remove('bg-red-600', 'text-white');
-                    btn.classList.add('bg-white/5');
-                }
-            });
+            document.getElementById('serverList').innerHTML = SERVERS.map((s, i) => `
+                <button onclick="switchServer(${i})" class="px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${i===idx ? 'lime-gradient text-black':'bg-white/5 text-gray-400 hover:text-white'}">${s.name}</button>
+            `).join('');
+            frame.onload = () => document.getElementById('playerLoader').classList.add('hidden');
         }
 
         function closePlayer() {
-            document.getElementById('playerOverlay').classList.add('hidden');
+            document.getElementById('playerOverlay').classList.replace('flex', 'hidden');
             document.getElementById('videoFrame').src = "";
             document.body.style.overflow = 'auto';
-        }
-
-        function updateNav(element) {
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-red-600', 'text-white');
-                btn.classList.add('text-gray-500');
-            });
-            element.classList.add('bg-red-600', 'text-white');
-            element.classList.remove('text-gray-500');
         }
     </script>
 </body>
