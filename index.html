@@ -3,136 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kon-Key Watch | looolllllll...</title>
+    <title>Kon-Key Watch | Premium Streaming</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --lime: #bef264;
+            --lime-dark: #10b981;
+        }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #000;
+            background-color: #050505;
             color: #fff;
             overflow-x: hidden;
         }
         .simple-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 1.5rem;
         }
         @media (min-width: 768px) {
-            .simple-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+            .simple-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
         }
-        .movie-card:hover img { filter: brightness(0.5); transform: scale(1.05); }
+        .movie-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .movie-card:hover {
+            transform: translateY(-8px);
+        }
+        .movie-card img {
+            transition: all 0.5s ease;
+        }
+        .movie-card:hover img {
+            filter: brightness(0.6) scale(1.05);
+        }
         .nav-active { 
-            background: linear-gradient(135deg, rgba(190, 242, 100, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
-            border-right: 3px solid #bef264;
-            color: #bef264 !important; 
+            background: linear-gradient(135deg, rgba(190, 242, 100, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border-right: 3px solid var(--lime);
+            color: var(--lime) !important; 
         }
-        .lime-gradient { background: linear-gradient(135deg, #bef264 0%, #10b981 100%); }
-        .lime-text { color: #bef264; }
+        .lime-gradient { background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%); }
+        .lime-text { color: var(--lime); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
         
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-in { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeIn 0.5s ease forwards; }
         
-        iframe { border: none; background: #000; }
-        select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1rem; padding-right: 2rem; }
+        iframe { border: none; background: #000; border-radius: 12px; }
+        select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.5)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem; padding-right: 2.5rem; }
         
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #bef264; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--lime); }
+
+        .shimmer {
+            background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        .hero-bg {
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+        }
     </style>
 </head>
 <body class="selection:bg-lime-500 selection:text-black">
 
     <!-- Sidebar Navigation -->
-    <aside class="fixed left-0 top-0 h-screen w-16 md:w-60 bg-black border-r border-white/10 z-[60] flex flex-col">
-        <div class="p-4 md:p-6 mb-4 flex items-center gap-3">
-            <div class="w-8 h-8 lime-gradient rounded flex items-center justify-center flex-none">
-                <svg class="w-4 h-4 text-black fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    <aside class="fixed left-0 top-0 h-screen w-16 md:w-64 bg-zinc-950 border-r border-white/5 z-[60] flex flex-col">
+        <div class="p-6 mb-8 flex items-center gap-3">
+            <div class="w-9 h-9 lime-gradient rounded-xl flex items-center justify-center flex-none shadow-lg shadow-lime-500/20">
+                <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
-            <h1 class="text-sm font-extrabold uppercase italic tracking-tighter hidden md:block">Kon-Key <span class="lime-text">Watch</span></h1>
+            <div class="hidden md:block">
+                <h1 class="text-sm font-black uppercase italic tracking-tighter leading-tight">Kon-Key <span class="lime-text block text-xs">Watch Studio</span></h1>
+            </div>
         </div>
 
-        <nav class="flex-grow px-2 space-y-1">
-            <button id="btn-trending" onclick="fetchDiscovery('trending', this)" class="nav-btn nav-active w-full flex items-center gap-4 p-4 rounded-lg text-gray-500 font-bold text-[10px] uppercase tracking-widest transition-all">
+        <nav class="flex-grow px-3 space-y-2">
+            <p class="hidden md:block text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 px-3">Menu</p>
+            <button id="btn-trending" onclick="fetchDiscovery('trending', this)" class="nav-btn nav-active w-full flex items-center gap-4 p-4 rounded-xl text-gray-400 font-bold text-[10px] uppercase tracking-widest transition-all hover:bg-white/5">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                 <span class="hidden md:block">Trending</span>
             </button>
-            <button id="btn-movie" onclick="fetchDiscovery('movie', this)" class="nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-gray-500 hover:text-white font-bold text-[10px] uppercase tracking-widest transition-all">
+            <button id="btn-movie" onclick="fetchDiscovery('movie', this)" class="nav-btn w-full flex items-center gap-4 p-4 rounded-xl text-gray-400 hover:text-white font-bold text-[10px] uppercase tracking-widest transition-all hover:bg-white/5">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>
                 <span class="hidden md:block">Movies</span>
             </button>
-            <button id="btn-tv" onclick="fetchDiscovery('tv', this)" class="nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-gray-500 hover:text-white font-bold text-[10px] uppercase tracking-widest transition-all">
+            <button id="btn-tv" onclick="fetchDiscovery('tv', this)" class="nav-btn w-full flex items-center gap-4 p-4 rounded-xl text-gray-400 hover:text-white font-bold text-[10px] uppercase tracking-widest transition-all hover:bg-white/5">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2-2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                 <span class="hidden md:block">Series</span>
             </button>
-            <button id="btn-animation" onclick="fetchDiscovery('animation', this)" class="nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-gray-500 hover:text-white font-bold text-[10px] uppercase tracking-widest transition-all">
+            <button id="btn-animation" onclick="fetchDiscovery('animation', this)" class="nav-btn w-full flex items-center gap-4 p-4 rounded-xl text-gray-400 hover:text-white font-bold text-[10px] uppercase tracking-widest transition-all hover:bg-white/5">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <span class="hidden md:block">Animation</span>
             </button>
         </nav>
+
+        <div class="p-6 border-t border-white/5 flex flex-col items-center md:items-start">
+             <p class="hidden md:block text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em]">© 2024 Kon-Key</p>
+        </div>
     </aside>
 
     <!-- Main Content Area -->
-    <main class="ml-16 md:ml-60 p-6 md:p-10">
-        <!-- Search Bar -->
-        <div class="mb-10 max-w-2xl relative">
-            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search for titles..."
-                   class="w-full bg-zinc-900 border border-white/5 rounded-xl py-3 px-6 text-sm focus:outline-none focus:border-lime-500/50 transition-all">
-            <div id="searchLoader" class="absolute right-4 top-1/2 -translate-y-1/2 hidden">
-                <div class="w-4 h-4 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
+    <main class="ml-16 md:ml-64 min-h-screen">
+        
+        <!-- Streamlined Search Bar -->
+        <div class="sticky top-0 z-50 px-6 md:px-10 py-6 flex items-center bg-black/50 backdrop-blur-xl border-b border-white/5">
+            <div class="flex-grow max-w-2xl relative group">
+                <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-lime-500 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+                <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search for movies, actors, or genres..."
+                       class="w-full bg-zinc-900/50 border border-white/5 rounded-2xl py-3 pl-12 pr-6 text-sm font-medium focus:outline-none focus:border-lime-500/50 focus:bg-zinc-900 transition-all">
+                <div id="searchLoader" class="absolute right-4 top-1/2 -translate-y-1/2 hidden">
+                    <div class="w-4 h-4 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
             </div>
-        </div>
-
-        <!-- Controls -->
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-white/5 pb-6">
-            <h2 id="viewTitle" class="text-lg font-extrabold uppercase tracking-widest lime-text">Trending</h2>
             
-            <div class="flex items-center gap-4">
-                <div class="flex flex-col">
-                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-tighter mb-1">Sort</span>
-                    <select id="sortSelect" onchange="applyFilters()" class="bg-zinc-950 border border-white/10 rounded px-3 py-1 text-[10px] font-bold uppercase text-gray-300 outline-none cursor-pointer">
-                        <option value="popularity.desc">Popularity</option>
-                        <option value="release_date.desc">Newest</option>
-                        <option value="vote_average.desc">Rating</option>
-                    </select>
+            <!-- Removed Notifications and Account Profile -->
+        </div>
+
+        <!-- Featured / Content Hero -->
+        <div id="heroSection" class="relative h-[40vh] md:h-[50vh] flex items-end px-6 md:px-10 pb-12 overflow-hidden">
+            <div id="heroPoster" class="absolute inset-0 z-0 bg-cover bg-center transition-all duration-1000 hero-bg"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
+            
+            <div class="relative z-10 max-w-3xl">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="px-2 py-1 bg-lime-500 text-black text-[9px] font-black uppercase rounded tracking-widest">Featured</span>
+                    <span id="heroType" class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-400">Movie</span>
                 </div>
-                <div class="flex flex-col">
-                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-tighter mb-1">Genre</span>
-                    <select id="genreSelect" onchange="applyFilters()" class="bg-zinc-950 border border-white/10 rounded px-3 py-1 text-[10px] font-bold uppercase text-gray-300 outline-none cursor-pointer">
-                        <option value="">All Genres</option>
-                    </select>
+                <h1 id="heroTitle" class="text-4xl md:text-6xl font-black uppercase italic tracking-tighter mb-4 leading-none">Discovery</h1>
+                <p id="heroDesc" class="text-zinc-400 text-sm md:text-base font-medium line-clamp-3 mb-8 max-w-xl"></p>
+                <div class="flex items-center gap-4">
+                    <button id="heroPlayBtn" class="px-8 py-3 lime-gradient text-black font-black uppercase text-xs rounded-xl shadow-xl shadow-lime-500/20 hover:scale-105 transition-all">Watch Now</button>
+                    <button class="px-8 py-3 glass rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all">Details</button>
                 </div>
             </div>
         </div>
 
-        <div id="mainGrid" class="simple-grid">
-            <!-- Grid Content Injected Here -->
+        <!-- Main Filter Bar -->
+        <div class="px-6 md:px-10 pt-4">
+            <div class="flex flex-wrap items-center justify-between gap-6 mb-10 pb-6 border-b border-white/5">
+                <div class="flex items-center gap-8">
+                    <h2 id="viewTitle" class="text-xl font-black uppercase italic tracking-tighter">Trending</h2>
+                    <div class="flex items-center gap-2">
+                        <button onclick="changeTimeWindow('day')" class="time-btn px-4 py-1 text-[10px] font-black uppercase rounded-full bg-lime-500 text-black">Today</button>
+                        <button onclick="changeTimeWindow('week')" class="time-btn px-4 py-1 text-[10px] font-black uppercase rounded-full glass text-zinc-500 hover:text-white transition-all">Week</button>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex flex-col">
+                        <span class="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1.5 ml-1">Sort Results</span>
+                        <select id="sortSelect" onchange="applyFilters()" class="bg-zinc-900 border border-white/5 rounded-xl px-4 py-2 text-[10px] font-bold uppercase text-zinc-300 outline-none cursor-pointer focus:border-lime-500/30 transition-all">
+                            <option value="popularity.desc">Most Popular</option>
+                            <option value="vote_average.desc">Top Rated</option>
+                            <option value="release_date.desc">Latest Release</option>
+                            <option value="revenue.desc">Box Office</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1.5 ml-1">Genre</span>
+                        <select id="genreSelect" onchange="applyFilters()" class="bg-zinc-900 border border-white/5 rounded-xl px-4 py-2 text-[10px] font-bold uppercase text-zinc-300 outline-none cursor-pointer focus:border-lime-500/30 transition-all">
+                            <option value="">All Genres</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mainGrid" class="simple-grid pb-20"></div>
         </div>
     </main>
 
     <!-- Player Overlay -->
     <div id="playerOverlay" class="fixed inset-0 bg-black z-[100] hidden flex-col">
-        <div class="p-4 flex items-center justify-between border-b border-white/5">
-            <button onclick="closePlayer()" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-lime-400 flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Exit Player
-            </button>
-            <div id="serverList" class="flex gap-2"></div>
-        </div>
-        <div class="flex-grow flex flex-col md:flex-row overflow-hidden">
-            <div class="flex-grow bg-black relative">
-                <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black">
-                    <div class="w-10 h-10 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
+        <div class="p-4 md:p-6 flex items-center justify-between border-b border-white/5 bg-zinc-950/50 backdrop-blur-xl">
+            <div class="flex items-center gap-4">
+                <button onclick="closePlayer()" class="w-10 h-10 glass rounded-xl flex items-center justify-center hover:text-lime-500 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                <div>
+                    <h3 id="playingTitle" class="text-sm font-black uppercase italic tracking-tighter">Title</h3>
+                    <div id="playingMeta" class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-1">Season 1 • Episode 1</div>
                 </div>
-                <iframe id="videoFrame" class="w-full h-full" allowfullscreen></iframe>
             </div>
-            <div id="episodeSidebar" class="hidden w-full md:w-80 bg-zinc-950 border-l border-white/5 flex-col overflow-y-auto p-4">
-                <div class="mb-4">
-                    <label class="text-[9px] font-bold text-gray-500 uppercase block mb-1">Select Season</label>
-                    <select id="seasonSelect" onchange="loadSeason(this.value)" class="w-full bg-zinc-900 text-xs font-bold text-white p-2 rounded outline-none border border-white/10"></select>
+            <div class="flex items-center gap-3">
+                <div id="serverList" class="flex gap-2"></div>
+                <button onclick="toggleLight()" class="w-10 h-10 glass rounded-xl flex items-center justify-center hover:text-yellow-400 transition-all" title="Toggle Cinema Mode">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="flex-grow flex flex-col lg:flex-row overflow-hidden">
+            <div class="flex-grow bg-black relative flex items-center justify-center">
+                <div id="playerLoader" class="absolute inset-0 flex flex-col items-center justify-center bg-black z-10">
+                    <div class="w-12 h-12 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600">Buffering Stream...</p>
                 </div>
-                <div id="episodeList" class="space-y-2"></div>
+                <iframe id="videoFrame" class="w-full h-full lg:max-h-[85vh] lg:w-[95%] lg:mt-4 shadow-2xl" allowfullscreen></iframe>
+            </div>
+            
+            <div id="episodeSidebar" class="hidden w-full lg:w-[400px] bg-zinc-950 border-l border-white/5 flex-col overflow-hidden">
+                <div class="p-6 border-b border-white/5">
+                    <p class="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-3">Continuity</p>
+                    <div class="relative">
+                        <select id="seasonSelect" onchange="loadSeason(this.value)" class="w-full bg-zinc-900 border border-white/5 text-xs font-black uppercase tracking-widest text-white p-4 rounded-2xl outline-none focus:border-lime-500/50"></select>
+                    </div>
+                </div>
+                <div id="episodeList" class="flex-grow overflow-y-auto p-4 space-y-3">
+                    <!-- Episodes -->
+                </div>
             </div>
         </div>
     </div>
@@ -141,13 +227,18 @@
         const API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb';
         const BASE_URL = 'https://api.themoviedb.org/3';
         const SERVERS = [
-            { name: 'Server 1', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.net/embed/movie?tmdb=${id}` },
-            { name: 'Server 2', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` }
+            { name: 'Server Primary', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.net/embed/movie?tmdb=${id}` },
+            { name: 'Server Backup', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` }
         ];
 
-        let currentItem = null, searchTimer, currentMode = 'trending', currentSeason = 1, currentEpisode = 1;
+        let currentItem = null, searchTimer, currentMode = 'trending', currentSeason = 1, currentEpisode = 1, timeWindow = 'day';
 
         window.onload = async () => {
+            initGenreList();
+            fetchDiscovery('trending', document.getElementById('btn-trending'));
+        };
+
+        async function initGenreList() {
             try {
                 const res = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
                 const data = await res.json();
@@ -158,9 +249,19 @@
                     opt.textContent = g.name;
                     select.appendChild(opt);
                 });
-            } catch (e) { console.error("Genre load error", e); }
-            fetchDiscovery('trending', document.getElementById('btn-trending'));
-        };
+            } catch (e) { console.error(e); }
+        }
+
+        function changeTimeWindow(val) {
+            timeWindow = val;
+            document.querySelectorAll('.time-btn').forEach(b => {
+                b.classList.remove('bg-lime-500', 'text-black');
+                b.classList.add('glass', 'text-zinc-500');
+            });
+            event.target.classList.replace('glass', 'bg-lime-500');
+            event.target.classList.replace('text-zinc-500', 'text-black');
+            fetchDiscovery(currentMode);
+        }
 
         function applyFilters() { fetchDiscovery(currentMode); }
 
@@ -174,15 +275,21 @@
             const genre = document.getElementById('genreSelect').value;
             const sort = document.getElementById('sortSelect').value;
             
-            grid.innerHTML = '<div class="col-span-full py-20 flex justify-center"><div class="w-8 h-8 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div></div>';
+            grid.innerHTML = Array(12).fill(0).map(() => `
+                <div class="animate-pulse">
+                    <div class="aspect-[2/3] rounded-2xl shimmer mb-4"></div>
+                    <div class="h-3 w-3/4 shimmer rounded-full mb-2"></div>
+                    <div class="h-2 w-1/2 shimmer rounded-full"></div>
+                </div>
+            `).join('');
 
             let url = '';
             const isTv = (mode === 'tv' || mode === 'animation');
             
             if (mode === 'trending' && !genre && sort === 'popularity.desc') {
-                url = `${BASE_URL}/trending/all/day?api_key=${API_KEY}`;
+                url = `${BASE_URL}/trending/all/${timeWindow}?api_key=${API_KEY}`;
             } else {
-                url = `${BASE_URL}/discover/${isTv ? 'tv' : 'movie'}?api_key=${API_KEY}&sort_by=${sort}&include_adult=false`;
+                url = `${BASE_URL}/discover/${isTv ? 'tv' : 'movie'}?api_key=${API_KEY}&sort_by=${sort}&include_adult=false&vote_count.gte=50`;
                 if (genre) url += `&with_genres=${genre}`;
                 if (mode === 'animation') url += `&with_genres=16`;
             }
@@ -190,9 +297,30 @@
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-                render(data.results || []);
+                const results = (data.results || []).filter(i => i.poster_path && i.media_type !== 'person');
+                render(results);
+                updateHero(results[0]);
                 document.getElementById('viewTitle').textContent = mode.toUpperCase();
-            } catch (e) { grid.innerHTML = '<p class="text-red-500 uppercase text-xs font-bold text-center col-span-full">Failed to fetch data</p>'; }
+            } catch (e) { grid.innerHTML = '<p class="col-span-full py-20 text-center font-black uppercase text-zinc-700 tracking-[0.3em]">Connection Error</p>'; }
+        }
+
+        function updateHero(item) {
+            if (!item) return;
+            const hero = document.getElementById('heroPoster');
+            const title = document.getElementById('heroTitle');
+            const desc = document.getElementById('heroDesc');
+            const type = document.getElementById('heroType');
+            const play = document.getElementById('heroPlayBtn');
+
+            hero.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${item.backdrop_path})`;
+            title.textContent = item.title || item.name;
+            desc.textContent = item.overview || "No description available.";
+            type.textContent = item.media_type === 'tv' ? 'TV Series' : 'Blockbuster Movie';
+            play.onclick = () => playItem({
+                id: item.id, 
+                type: item.media_type || (item.first_air_date ? 'tv' : 'movie'), 
+                title: item.title || item.name
+            });
         }
 
         async function handleSearch(q) {
@@ -214,17 +342,28 @@
             const grid = document.getElementById('mainGrid');
             const filtered = items.filter(i => i.poster_path && i.media_type !== 'person');
             if (filtered.length === 0) {
-                grid.innerHTML = '<p class="text-gray-500 uppercase text-[10px] font-bold text-center col-span-full py-20 tracking-widest">No results found</p>';
+                grid.innerHTML = '<div class="col-span-full py-20 text-center font-black uppercase text-zinc-700 tracking-[0.3em]">No Content Found</div>';
                 return;
             }
             grid.innerHTML = filtered.map((item, idx) => `
                 <div class="movie-card animate-in cursor-pointer group" style="animation-delay:${idx*0.02}s" onclick='playItem(${JSON.stringify({id: item.id, type: item.media_type || (item.first_air_date ? 'tv' : 'movie'), title: item.title || item.name}).replace(/'/g, "&apos;")})'>
-                    <div class="aspect-[2/3] rounded-xl overflow-hidden bg-zinc-900 border border-white/5 transition-all shadow-lg">
-                        <img src="https://image.tmdb.org/t/p/w342${item.poster_path}" class="w-full h-full object-cover transition-transform duration-500" loading="lazy">
+                    <div class="relative aspect-[2/3] rounded-2xl overflow-hidden bg-zinc-900 border border-white/5 shadow-2xl">
+                        <img src="https://image.tmdb.org/t/p/w342${item.poster_path}" class="w-full h-full object-cover" loading="lazy">
+                        <div class="absolute top-3 right-3 glass px-2 py-1 rounded-lg flex items-center gap-1.5 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                            <svg class="w-2.5 h-2.5 text-lime-500 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <span class="text-[10px] font-black">${(item.vote_average || 0).toFixed(1)}</span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                             <button class="w-full py-2.5 lime-gradient text-black text-[9px] font-black uppercase rounded-xl tracking-widest scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all delay-75">Watch Now</button>
+                        </div>
                     </div>
-                    <div class="mt-3">
-                        <h4 class="text-[11px] font-extrabold truncate uppercase tracking-tight group-hover:lime-text transition-colors">${item.title || item.name}</h4>
-                        <p class="text-[9px] text-gray-500 font-bold mt-1 uppercase">${(item.release_date || item.first_air_date || '').split('-')[0] || 'N/A'}</p>
+                    <div class="mt-4 px-1">
+                        <h4 class="text-[11px] font-black truncate uppercase tracking-tighter group-hover:lime-text transition-colors">${item.title || item.name}</h4>
+                        <div class="flex items-center gap-2 mt-1.5">
+                            <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">${(item.release_date || item.first_air_date || '').split('-')[0] || 'N/A'}</span>
+                            <span class="w-1 h-1 bg-zinc-800 rounded-full"></span>
+                            <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">${item.media_type === 'tv' ? 'Series' : 'Movie'}</span>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -234,6 +373,7 @@
             currentItem = item;
             document.getElementById('playerOverlay').classList.remove('hidden');
             document.getElementById('playerOverlay').classList.add('flex');
+            document.getElementById('playingTitle').textContent = item.title;
             document.body.style.overflow = 'hidden';
 
             if (item.type === 'tv') {
@@ -241,6 +381,7 @@
                 fetchSeasons(item.id);
             } else {
                 document.getElementById('episodeSidebar').classList.replace('flex', 'hidden');
+                document.getElementById('playingMeta').textContent = 'Feature Film';
             }
             switchServer(0);
         }
@@ -258,29 +399,52 @@
             const res = await fetch(`${BASE_URL}/tv/${currentItem.id}/season/${s}?api_key=${API_KEY}`);
             const data = await res.json();
             document.getElementById('episodeList').innerHTML = (data.episodes || []).map(ep => `
-                <div onclick="playEpisode(${ep.episode_number})" class="text-[10px] font-bold p-3 bg-white/5 hover:bg-lime-500/10 cursor-pointer rounded-lg transition-all flex items-center gap-3">
-                    <span class="text-lime-500 font-black">E${ep.episode_number}</span>
-                    <span class="truncate text-gray-300">${ep.name}</span>
+                <div onclick="playEpisode(${ep.episode_number})" id="ep-${ep.episode_number}" class="ep-card group p-4 bg-zinc-900 hover:bg-zinc-800 border border-white/5 cursor-pointer rounded-2xl transition-all flex items-center gap-4">
+                    <div class="relative w-20 aspect-video rounded-lg overflow-hidden flex-none bg-zinc-950">
+                        <img src="https://image.tmdb.org/t/p/w185${ep.still_path}" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <svg class="w-4 h-4 text-lime-500 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-[10px] font-black uppercase text-lime-500 mb-0.5">E${ep.episode_number}</p>
+                        <h4 class="text-[10px] font-bold text-gray-200 truncate uppercase tracking-tighter">${ep.name}</h4>
+                    </div>
                 </div>
             `).join('');
+            document.getElementById('playingMeta').textContent = `Season ${s} • Episode ${currentEpisode}`;
         }
 
-        function playEpisode(e) { currentEpisode = e; switchServer(0); }
+        function playEpisode(e) { 
+            currentEpisode = e; 
+            document.getElementById('playingMeta').textContent = `Season ${currentSeason} • Episode ${e}`;
+            switchServer(0); 
+        }
 
         function switchServer(idx) {
             const frame = document.getElementById('videoFrame');
-            document.getElementById('playerLoader').classList.remove('hidden');
+            const loader = document.getElementById('playerLoader');
+            loader.classList.remove('hidden');
             frame.src = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
             document.getElementById('serverList').innerHTML = SERVERS.map((s, i) => `
-                <button onclick="switchServer(${i})" class="px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${i===idx ? 'lime-gradient text-black':'bg-white/5 text-gray-400 hover:text-white'}">${s.name}</button>
+                <button onclick="switchServer(${i})" class="px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${i===idx ? 'lime-gradient text-black shadow-lg shadow-lime-500/20':'glass text-gray-500 hover:text-white'}">${s.name}</button>
             `).join('');
-            frame.onload = () => document.getElementById('playerLoader').classList.add('hidden');
+            frame.onload = () => loader.classList.add('hidden');
+        }
+
+        function toggleLight() {
+            const overlay = document.getElementById('playerOverlay');
+            overlay.classList.toggle('bg-black');
+            overlay.classList.toggle('bg-zinc-950');
+            const sidebar = document.getElementById('episodeSidebar');
+            sidebar.classList.toggle('opacity-10');
         }
 
         function closePlayer() {
             document.getElementById('playerOverlay').classList.replace('flex', 'hidden');
             document.getElementById('videoFrame').src = "";
             document.body.style.overflow = 'auto';
+            currentEpisode = 1;
         }
     </script>
 </body>
