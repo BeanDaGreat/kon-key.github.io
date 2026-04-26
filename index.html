@@ -187,7 +187,20 @@
                 </div>
             </div>
 
-            <div id="serverList" class="flex gap-2 hidden md:flex"></div>
+            <div class="flex items-center gap-3">
+                <select id="dubLangSelect" onchange="changeDubLang(this.value)" class="bg-zinc-900 border border-white/20 rounded px-2 py-1 text-[10px] font-bold uppercase text-gray-300 outline-none cursor-pointer">
+                    <option value="">Auto/Orig</option>
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="it">Italian</option>
+                    <option value="pt">Portuguese</option>
+                    <option value="ja">Japanese</option>
+                    <option value="hi">Hindi</option>
+                </select>
+                <div id="serverList" class="flex gap-2 hidden md:flex"></div>
+            </div>
         </div>
 
         <!-- Detailed Info Bar -->
@@ -263,6 +276,7 @@
         let currentMode = 'trending';
         let currentSeason = 1;
         let currentEpisode = 1;
+        let currentDubLang = '';
         let currentSeasonData = []; // Store episodes for quick nav
         let currentPage = 1;
         let totalPages = 1;
@@ -348,6 +362,24 @@
                 closePlayer();
             }
         });
+
+        function changeDubLang(val) {
+            currentDubLang = val;
+            if (!currentItem) return;
+            
+            let activeBtn = document.querySelector('.srv-btn.active-srv');
+            let idx = activeBtn ? Array.from(document.querySelectorAll('.srv-btn')).indexOf(activeBtn) : 0;
+            idx = idx % SERVERS.length; 
+            
+            const frame = document.getElementById('videoFrame');
+            document.getElementById('playerLoader').classList.remove('hidden');
+            
+            let url = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
+            if (currentDubLang) {
+                url += (url.includes('?') ? '&' : '?') + 'lang=' + currentDubLang;
+            }
+            frame.src = url;
+        }
 
         function handleSortChange() {
             const sort = document.getElementById('sortSelect').value;
@@ -661,7 +693,13 @@
             }
 
             fetchItemDetails(item.id, item.type);
-            frame.src = SERVERS[0].url(item.id, item.type, currentSeason, currentEpisode);
+            
+            let url = SERVERS[0].url(item.id, item.type, currentSeason, currentEpisode);
+            if (currentDubLang) {
+                url += (url.includes('?') ? '&' : '?') + 'lang=' + currentDubLang;
+            }
+            frame.src = url;
+            
             renderServerButtons();
 
             document.getElementById('playerLoader').classList.remove('hidden');
@@ -721,7 +759,7 @@
                             document.getElementById('playerLoader').classList.remove('hidden');
                             frame.src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
                             document.querySelectorAll('.srv-btn').forEach(b => {
-                                b.classList.remove('bg-red-600', 'text-white');
+                                b.classList.remove('bg-red-600', 'text-white', 'active-srv');
                                 b.classList.add('bg-white/5');
                             });
                         };
@@ -798,7 +836,12 @@
                 
                 const frame = document.getElementById('videoFrame');
                 document.getElementById('playerLoader').classList.remove('hidden');
-                frame.src = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
+                
+                let url = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
+                if (currentDubLang) {
+                    url += (url.includes('?') ? '&' : '?') + 'lang=' + currentDubLang;
+                }
+                frame.src = url;
             }
         }
 
@@ -816,7 +859,12 @@
         function switchServer(idx) {
             const frame = document.getElementById('videoFrame');
             document.getElementById('playerLoader').classList.remove('hidden');
-            frame.src = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
+            
+            let url = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
+            if (currentDubLang) {
+                url += (url.includes('?') ? '&' : '?') + 'lang=' + currentDubLang;
+            }
+            frame.src = url;
 
             document.querySelectorAll('.srv-btn').forEach((btn, i) => {
                 if(i % SERVERS.length === idx) {
