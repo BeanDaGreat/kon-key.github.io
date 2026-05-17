@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kon-Key Watch - Free Movies</title>
+    <title>Kon-Key Watch - Stream Free Movies, TV & Anime</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #000;
+            background-color: #08080c;
             color: #fff;
             overflow-x: hidden;
             scroll-behavior: smooth;
@@ -40,8 +40,15 @@
         .toast-enter { animation: slideInUp 0.3s ease-out forwards; }
 
         /* Skeleton Loading Animation */
-        .skeleton { animation: pulse 1.5s infinite ease-in-out; background: #1a1a1a; }
+        .skeleton { animation: pulse 1.5s infinite ease-in-out; background: #151520; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* Glassmorphism details */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
     </style>
 </head>
 <body class="selection:bg-red-600 relative">
@@ -49,6 +56,7 @@
     <!-- Toast Notification Container -->
     <div id="toastContainer" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[150] flex flex-col gap-2 pointer-events-none"></div>
 
+    <!-- Navigation Sidebar -->
     <aside class="fixed left-0 top-0 h-screen w-16 md:w-56 bg-black border-r border-white/10 z-50 flex flex-col overflow-y-auto overflow-x-hidden">
         <div class="p-4 md:p-6 mb-6 flex items-center gap-3 shrink-0 cursor-pointer" onclick="fetchDiscovery('trending', document.getElementById('nav-trending'))">
             <div class="w-8 h-8 bg-red-600 rounded flex items-center justify-center shrink-0">
@@ -117,10 +125,12 @@
         </nav>
     </aside>
 
+    <!-- Main Container -->
     <main class="ml-16 md:ml-56 p-6 md:p-10 pb-20">
 
+        <!-- Search Bar -->
         <div class="mb-10 max-w-2xl relative group">
-            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search Movies And More"
+            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search Movies, Anime And More..."
                    class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 pr-12 text-sm focus:outline-none focus:border-red-600 focus:bg-white/10 transition-all">
             
             <button id="clearSearchBtn" onclick="clearSearch()" class="absolute right-4 top-1/2 -translate-y-1/2 hidden text-gray-400 hover:text-white bg-black/50 p-1 rounded-full backdrop-blur transition-all">
@@ -133,6 +143,7 @@
         </div>
 
         <div class="space-y-6">
+            <!-- Header Grid Controller -->
             <div class="flex items-center justify-between border-b border-white/5 pb-4 flex-wrap gap-2">
                 <div class="flex items-center gap-4">
                     <h2 id="viewTitle" class="text-2xl font-black uppercase tracking-tighter">Connecting</h2>
@@ -144,7 +155,7 @@
                     <select id="yearSelect" onchange="applyFilters()" class="hidden bg-zinc-900 border border-white/20 rounded px-2 py-1 text-xs font-bold uppercase text-gray-300 outline-none cursor-pointer">
                     </select>
                 </div>
-                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest hidden md:block">kom. ultra</div>
+                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest hidden md:block">kom. ultra v2</div>
             </div>
             
             <div id="mainGrid" class="simple-grid">
@@ -166,9 +177,11 @@
         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
     </button>
 
-    <!-- Player Overlay -->
-    <div id="playerOverlay" class="fixed inset-0 bg-black z-[100] hidden flex flex-col">
-        <div class="p-4 flex items-center justify-between bg-black border-b border-white/5 flex-none relative z-50">
+    <!-- Cinema Mode Player Overlay -->
+    <div id="playerOverlay" class="fixed inset-0 bg-[#06060a] z-[100] hidden overflow-y-auto">
+        
+        <!-- Header Controls -->
+        <div class="p-4 flex items-center justify-between bg-black/90 sticky top-0 border-b border-white/5 z-50 backdrop-blur">
             <div class="flex items-center gap-4">
                 <button onclick="closePlayer()" class="flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest hover:text-red-500 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
@@ -176,12 +189,12 @@
                 </button>
                 
                 <!-- Quick Episode Nav -->
-                <div id="epNav" class="hidden md:flex items-center gap-2 pl-4 border-l border-white/10">
-                    <button onclick="navigateEpisode(-1)" class="p-1 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors" title="Previous Episode">
+                <div id="epNav" class="hidden flex items-center gap-2 pl-4 border-l border-white/10">
+                    <button onclick="navigateEpisode(-1)" class="p-1.5 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors" title="Previous Episode">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     </button>
-                    <span id="currentEpLabel" class="text-[10px] font-bold uppercase tracking-widest text-white w-14 text-center">S1 E1</span>
-                    <button onclick="navigateEpisode(1)" class="p-1 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors" title="Next Episode">
+                    <span id="currentEpLabel" class="text-[10px] font-bold uppercase tracking-widest text-white px-2 py-1 bg-white/5 rounded">S1 E1</span>
+                    <button onclick="navigateEpisode(1)" class="p-1.5 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors" title="Next Episode">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </button>
                 </div>
@@ -199,64 +212,163 @@
                     <option value="ja">Japanese</option>
                     <option value="hi">Hindi</option>
                 </select>
-                <div id="serverList" class="flex gap-2 hidden md:flex"></div>
-            </div>
-        </div>
-
-        <!-- Detailed Info Bar -->
-        <div id="playerInfoBar" class="bg-zinc-900 border-b border-white/10 hidden md:flex items-center justify-between px-6 py-4 flex-none shadow-lg z-40">
-            <div class="flex-grow min-w-0 pr-4">
-                <div class="flex items-center gap-3">
-                    <h3 id="infoTitle" class="font-black text-xl uppercase tracking-tighter truncate"></h3>
-                    <span id="infoRating" class="px-2 py-0.5 bg-yellow-500/20 text-yellow-500 text-[10px] font-bold rounded uppercase"></span>
-                    <span id="infoRuntime" class="text-gray-400 text-[10px] font-bold uppercase tracking-widest"></span>
-                </div>
-                <p id="infoDesc" class="text-xs text-gray-400 mt-1 line-clamp-2 max-w-4xl"></p>
-                <p id="infoCast" class="text-[10px] text-gray-500 mt-1.5 uppercase tracking-widest hidden truncate"></p>
-            </div>
-            <div class="flex items-center gap-3 shrink-0">
-                <button id="similarBtn" onclick="fetchSimilar()" class="px-4 py-2 bg-blue-600/20 text-blue-500 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 border border-blue-600/30">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                    Similar
-                </button>
-                <button id="trailerBtn" class="hidden px-4 py-2 bg-red-600/20 text-red-500 hover:bg-red-600 hover:text-white rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 border border-red-600/30">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    Trailer
+                <button onclick="shareWatchLink()" class="p-2 bg-white/5 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5 text-xs font-bold" title="Share Watch Link">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742a3 3 0 110 2.516m0-2.516a3 3 0 110-2.516m0 2.516l5.132 2.566m-5.132-2.566l5.132-2.566"/></svg>
+                    <span>Share</span>
                 </button>
             </div>
         </div>
 
-        <div class="flex-grow flex overflow-hidden">
-            <div class="flex-grow relative bg-black h-full">
-                <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black z-20">
-                    <div class="w-10 h-10 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+        <!-- Master Cinema Container -->
+        <div class="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8">
+            
+            <!-- Video Stage Block -->
+            <div class="w-full aspect-video bg-black rounded-2xl overflow-hidden relative border border-white/10 shadow-2xl">
+                <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black/90 z-20">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                        <span class="text-xs uppercase font-bold tracking-widest text-gray-400">Loading High-Speed Stream...</span>
+                    </div>
                 </div>
-                <iframe id="videoFrame" class="w-full h-full" allowfullscreen></iframe>
+                <iframe id="videoFrame" class="w-full h-full" allowfullscreen allow="autoplay; encrypted-media"></iframe>
             </div>
-            <div id="episodeSidebar" class="hidden w-full md:w-80 bg-[#050505] border-l border-white/10 flex-col flex-none h-full overflow-hidden absolute md:relative right-0 z-30 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
-                <div class="p-4 border-b border-white/10 flex items-center justify-between shrink-0">
-                    <span class="font-bold text-sm uppercase">Episodes</span>
-                    <select id="seasonSelect" onchange="loadSeason(this.value)" class="bg-zinc-900 border border-white/20 rounded px-2 py-1 text-xs font-bold text-white outline-none cursor-pointer">
-                    </select>
+
+            <!-- Dashboard controls & Server Deck (UNDER PLAYER) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Left: Info Panel + Servers -->
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <!-- Media metadata Block -->
+                    <div class="glass-panel rounded-2xl p-6 relative overflow-hidden">
+                        <div class="flex items-start justify-between flex-wrap gap-4">
+                            <div>
+                                <h3 id="infoTitle" class="font-black text-2xl md:text-3xl uppercase tracking-tighter text-white"></h3>
+                                <div class="flex items-center gap-3 mt-2 flex-wrap">
+                                    <span id="infoRating" class="px-2 py-0.5 bg-yellow-500/20 text-yellow-500 text-[10px] font-black rounded uppercase"></span>
+                                    <span id="infoRuntime" class="text-gray-400 text-[10px] font-bold uppercase tracking-widest"></span>
+                                    <span id="animeTag" class="hidden px-2 py-0.5 bg-purple-500/20 text-purple-400 text-[10px] font-black rounded uppercase">Anime optimized</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button id="trailerBtn" class="hidden px-4 py-2 bg-red-600/20 text-red-500 hover:bg-red-600 hover:text-white rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 border border-red-600/30">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Watch Trailer
+                                </button>
+                                <button id="similarBtn" onclick="fetchSimilar()" class="px-4 py-2 bg-blue-600/20 text-blue-500 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 border border-blue-600/30">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Similar
+                                </button>
+                            </div>
+                        </div>
+                        <p id="infoDesc" class="text-sm text-gray-300 mt-4 leading-relaxed"></p>
+                        <p id="infoCast" class="text-[11px] text-gray-500 mt-4 uppercase tracking-widest border-t border-white/5 pt-4"></p>
+                    </div>
+
+                    <!-- Stream Control Options panel -->
+                    <div class="glass-panel rounded-2xl p-6 space-y-4">
+                        <div class="text-xs font-black uppercase tracking-widest text-red-500">Player Settings</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <label class="flex items-center gap-3 p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors">
+                                <input type="checkbox" id="autoPlayToggle" checked class="accent-red-600 w-4 h-4">
+                                <div>
+                                    <div class="text-xs font-bold text-white uppercase tracking-wider">Auto-Play Next Episode</div>
+                                    <p class="text-[10px] text-gray-500">Trigger subsequent episode automatically</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors">
+                                <input type="checkbox" id="autoSkipToggle" class="accent-red-600 w-4 h-4">
+                                <div>
+                                    <div class="text-xs font-bold text-white uppercase tracking-wider">Auto-Skip Opening/Intro</div>
+                                    <p class="text-[10px] text-gray-500">Simulate jumping ahead 85s instantly</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Servers selector Container (UNDER PLAYER) -->
+                    <div class="glass-panel rounded-2xl p-6 space-y-4">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <div class="text-xs font-black uppercase tracking-widest text-red-500">Select Streaming Server</div>
+                            <div id="serverTypeBadge" class="hidden px-2 py-0.5 bg-yellow-500/10 text-yellow-500 text-[9px] font-bold rounded uppercase tracking-wider">Default Server Active</div>
+                        </div>
+                        
+                        <!-- Premium/General Server Tabs -->
+                        <div class="space-y-4">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider block mb-2">Anime Specialized / Fast Gateways</span>
+                                <div id="animeServersContainer" class="flex flex-wrap gap-2">
+                                    <!-- Anime specialized nodes -->
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider block mb-2">General Gateways</span>
+                                <div id="generalServersContainer" class="flex flex-wrap gap-2">
+                                    <!-- General Servers list -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Persistent Community Comments Box -->
+                    <div class="glass-panel rounded-2xl p-6 space-y-4">
+                        <div class="text-xs font-black uppercase tracking-widest text-red-500">Community Discussion & Notes</div>
+                        
+                        <div class="space-y-4">
+                            <div id="commentsPlaceholder" class="hidden text-center py-6 text-gray-500 text-xs uppercase tracking-wider">
+                                No comments posted yet. Start the conversation!
+                            </div>
+                            <div id="commentsList" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                                <!-- Dynamic Local Storage comments rendered here -->
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 pt-2 border-t border-white/5">
+                            <input type="text" id="commentInput" placeholder="Write a comment or note..." class="flex-grow bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-red-600 text-white">
+                            <button onclick="postComment()" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all">
+                                Send
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
-                <div id="episodeList" class="flex-grow overflow-y-auto p-2 space-y-2">
+
+                <!-- Right: Dynamic Episodes Dashboard -->
+                <div id="episodeHub" class="hidden lg:col-span-1 space-y-6">
+                    <div class="glass-panel rounded-2xl p-6 flex flex-col h-full max-h-[800px]">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-4 flex-none">
+                            <span class="font-black text-xs uppercase tracking-widest text-red-500">Episodes List</span>
+                            <select id="seasonSelect" onchange="loadSeason(this.value)" class="bg-zinc-900 border border-white/20 rounded px-2.5 py-1 text-xs font-bold text-white outline-none cursor-pointer">
+                            </select>
+                        </div>
+                        
+                        <!-- Scrollable episode selection lists -->
+                        <div id="episodeList" class="flex-grow overflow-y-auto space-y-2 pr-1">
+                            <!-- Episodes load here -->
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
-        
-        <!-- Mobile Server List (Shows on small screens) -->
-        <div id="mobileServerList" class="p-3 border-t border-white/5 bg-black flex gap-2 overflow-x-auto md:hidden shrink-0"></div>
     </div>
 
     <script>
         const API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb';
         const BASE_URL = 'https://api.themoviedb.org/3';
 
+        // High speed gateways (general + anime specialized)
         const SERVERS = [
-            { name: 'Server 1', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.net/embed/movie?tmdb=${id}` },
-            { name: 'Server 2', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-            { name: 'Server 3', url: (id, type, s=1, e=1) => type === 'tv' ? `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
-            { name: 'Server 4', url: (id, type, s=1, e=1) => type === 'tv' ? `https://autoembed.co/tv/tmdb/${id}-${s}-${e}` : `https://autoembed.co/movie/tmdb/${id}` }
+            { id: 'vnet', category: 'general', name: 'Server Net', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.net/embed/movie?tmdb=${id}` },
+            { id: 'vme', category: 'general', name: 'Server Me', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+            { id: 'multi', category: 'general', name: 'Server Multi', url: (id, type, s=1, e=1) => type === 'tv' ? `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
+            { id: 'auto', category: 'general', name: 'Server Auto', url: (id, type, s=1, e=1) => type === 'tv' ? `https://autoembed.co/tv/tmdb/${id}-${s}-${e}` : `https://autoembed.co/movie/tmdb/${id}` },
+            
+            // Dedicated Anime / Special Servers
+            { id: 'kiwik', category: 'anime', name: 'Kiwik CX (Anime)', url: (id, type, s=1, e=1) => type === 'tv' ? `https://kiwik.cx/embed/tv?tmdb=${id}&s=${s}&e=${e}` : `https://kiwik.cx/embed/movie?tmdb=${id}` },
+            { id: 'vto', category: 'anime', name: 'Vidsrc TO (Special)', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}` },
+            { id: 'vcc', category: 'anime', name: 'Vidsrc CC (Premium)', url: (id, type, s=1, e=1) => type === 'tv' ? `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}` : `https://vidsrc.cc/v2/embed/movie/${id}` },
+            { id: 'esub', category: 'anime', name: 'Embed SU (Direct)', url: (id, type, s=1, e=1) => type === 'tv' ? `https://embed.su/embed/tv/${id}/${s}/${e}` : `https://embed.su/embed/movie/${id}` }
         ];
 
         const FALLBACK_DATA = [
@@ -277,11 +389,13 @@
         let currentSeason = 1;
         let currentEpisode = 1;
         let currentDubLang = '';
-        let currentSeasonData = []; // Store episodes for quick nav
+        let currentSeasonData = []; 
         let currentPage = 1;
         let totalPages = 1;
+        
         let watchlist = JSON.parse(localStorage.getItem('kk_watchlist')) || [];
         let viewHistory = JSON.parse(localStorage.getItem('kk_history')) || [];
+        let totalSeasonsInShow = 1; 
 
         function renderSkeletons() {
             const grid = document.getElementById('mainGrid');
@@ -294,7 +408,7 @@
             `).join('');
         }
 
-        // Watchlist & History Functions
+        // Toggle watchlist state
         function toggleWatchlist(event, itemJson) {
             event.stopPropagation();
             const item = JSON.parse(decodeURIComponent(itemJson));
@@ -320,9 +434,9 @@
         }
 
         function addToHistory(item) {
-            viewHistory = viewHistory.filter(i => i.id !== item.id); // Remove duplicates
-            viewHistory.unshift(item); // Add to beginning
-            if (viewHistory.length > 30) viewHistory.pop(); // Keep max 30 items
+            viewHistory = viewHistory.filter(i => i.id !== item.id);
+            viewHistory.unshift(item); 
+            if (viewHistory.length > 30) viewHistory.pop(); 
             localStorage.setItem('kk_history', JSON.stringify(viewHistory));
         }
 
@@ -341,6 +455,52 @@
             }, 2500);
         }
 
+        // Check if query state parameters exist (for direct play link)
+        function checkURLParameters() {
+            const params = new URLSearchParams(window.location.search);
+            const mediaId = params.get('id');
+            const mediaType = params.get('type');
+            const targetSeason = params.get('s');
+            const targetEpisode = params.get('e');
+
+            if (mediaId && mediaType) {
+                const dummyItem = {
+                    id: parseInt(mediaId),
+                    type: mediaType,
+                    title: params.get('title') || 'Shared Title',
+                    poster_path: params.get('poster') || ''
+                };
+                
+                if (targetSeason) currentSeason = parseInt(targetSeason);
+                if (targetEpisode) currentEpisode = parseInt(targetEpisode);
+
+                playItem(dummyItem);
+            }
+        }
+
+        // Generate and Copy Watch Link
+        function shareWatchLink() {
+            if (!currentItem) return;
+            const baseUrl = window.location.origin + window.location.pathname;
+            let queryParams = `?id=${currentItem.id}&type=${currentItem.type}&title=${encodeURIComponent(currentItem.title)}&poster=${encodeURIComponent(currentItem.poster_path || '')}`;
+            
+            if (currentItem.type === 'tv') {
+                queryParams += `&s=${currentSeason}&e=${currentEpisode}`;
+            }
+
+            const shareUrl = baseUrl + queryParams;
+
+            // Direct fallback copy method compatible with sandbox frames
+            const tempInput = document.createElement('input');
+            tempInput.value = shareUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast("Copied watch link to clipboard!");
+        }
+
         window.onload = () => {
             const yearSelect = document.getElementById('yearSelect');
             const currentYear = new Date().getFullYear();
@@ -349,6 +509,9 @@
                 yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
             }
             fetchDiscovery('trending', document.getElementById('nav-trending'));
+
+            // Check URL link params
+            checkURLParameters();
         };
 
         window.addEventListener('scroll', () => {
@@ -368,17 +531,9 @@
             if (!currentItem) return;
             
             let activeBtn = document.querySelector('.srv-btn.active-srv');
-            let idx = activeBtn ? Array.from(document.querySelectorAll('.srv-btn')).indexOf(activeBtn) : 0;
-            idx = idx % SERVERS.length; 
+            let idx = activeBtn ? parseInt(activeBtn.getAttribute('data-index')) : 0;
             
-            const frame = document.getElementById('videoFrame');
-            document.getElementById('playerLoader').classList.remove('hidden');
-            
-            let url = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
-            if (currentDubLang) {
-                url += (url.includes('?') ? '&' : '?') + 'lang=' + currentDubLang;
-            }
-            frame.src = url;
+            triggerServerLoad(idx);
         }
 
         function handleSortChange() {
@@ -411,7 +566,7 @@
                 const randomIdx = Math.floor(Math.random() * cards.length);
                 cards[randomIdx].click();
             } else {
-                showToast("No items available to randomize!");
+                showToast("No items loaded to randomize!");
             }
         }
 
@@ -436,7 +591,7 @@
                 loadMoreBtn.classList.add('hidden');
             }
 
-            // Local Data Modes (Watchlist / History)
+            // Local Watchlist / History
             if (mode === 'watchlist' || mode === 'history') {
                 document.getElementById('sortSelect').classList.add('hidden');
                 document.getElementById('yearSelect').classList.add('hidden');
@@ -462,8 +617,8 @@
 
             const titles = {
                 'trending': 'Trending', 'movie': 'Movies', 'tv': 'TV Shows',
-                'anime': 'Anime', 'action': 'Action', 'comedy': 'Comedy',
-                'scifi': 'Sci-Fi', 'horror': 'Horror', 'romance': 'Romance'
+                'anime': 'Anime Collection', 'action': 'Action Blockbusters', 'comedy': 'Comedy Zone',
+                'scifi': 'Sci-Fi Universe', 'horror': 'Horror Nights', 'romance': 'Romantic Stories'
             };
             title.textContent = titles[mode] || 'Results';
 
@@ -517,7 +672,7 @@
                     renderResults(data.results, false);
                 } else {
                     showToast("No similar items found.");
-                    fetchDiscovery('trending'); // fallback
+                    fetchDiscovery('trending');
                 }
             } catch(e) {
                 showToast("Failed to fetch similar items.");
@@ -653,24 +808,28 @@
 
         async function playItem(item) {
             currentItem = item;
-            currentSeason = 1;
-            currentEpisode = 1;
+            
+            // Check if URL parameter gave different defaults, otherwise default 1
+            const params = new URLSearchParams(window.location.search);
+            currentSeason = params.get('s') ? parseInt(params.get('s')) : 1;
+            currentEpisode = params.get('e') ? parseInt(params.get('e')) : 1;
+            
             currentSeasonData = [];
             
-            // Add to history
             addToHistory(item);
 
             const overlay = document.getElementById('playerOverlay');
             const frame = document.getElementById('videoFrame');
-            const sidebar = document.getElementById('episodeSidebar');
+            const epHub = document.getElementById('episodeHub');
             const epNav = document.getElementById('epNav');
+            const animeBadge = document.getElementById('animeTag');
             
-            // Reset info bar
             document.getElementById('infoTitle').textContent = item.title;
-            document.getElementById('infoDesc').textContent = 'Loading details...';
+            document.getElementById('infoDesc').textContent = 'Acquiring content summaries and links...';
             document.getElementById('infoRating').textContent = '';
             document.getElementById('infoRuntime').textContent = '';
             document.getElementById('infoCast').classList.add('hidden');
+            animeBadge.classList.add('hidden');
             
             const trailerBtn = document.getElementById('trailerBtn');
             trailerBtn.classList.add('hidden');
@@ -679,43 +838,112 @@
             overlay.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
-            if (item.type === 'tv') {
-                sidebar.classList.remove('hidden');
-                sidebar.classList.add('flex');
+            if (item.type === 'tv' || item.type === 'anime') {
+                epHub.classList.remove('hidden');
+                epHub.classList.add('block');
                 epNav.classList.remove('hidden');
-                epNav.classList.add('md:flex');
+                epNav.classList.add('flex');
                 fetchSeasons(item.id);
             } else {
-                sidebar.classList.add('hidden');
-                sidebar.classList.remove('flex');
+                epHub.classList.add('hidden');
+                epHub.classList.remove('block');
                 epNav.classList.add('hidden');
-                epNav.classList.remove('md:flex');
+                epNav.classList.remove('flex');
             }
 
             fetchItemDetails(item.id, item.type);
             
-            let url = SERVERS[0].url(item.id, item.type, currentSeason, currentEpisode);
+            // Render beautiful community comments block
+            renderComments();
+
+            // Check if anime is highlighted
+            const isAnimeMode = (currentMode === 'anime');
+            if (isAnimeMode) animeBadge.classList.remove('hidden');
+
+            renderUnderPlayerServers(isAnimeMode);
+            
+            // Trigger load to general server 0
+            triggerServerLoad(0);
+        }
+
+        function renderUnderPlayerServers(isAnimeType = false) {
+            const animeContainer = document.getElementById('animeServersContainer');
+            const generalContainer = document.getElementById('generalServersContainer');
+            const badge = document.getElementById('serverTypeBadge');
+
+            let animeIndex = 0;
+            let generalIndex = 0;
+
+            const animeHtml = SERVERS.map((s, idx) => {
+                if (s.category === 'anime') {
+                    animeIndex++;
+                    const activeClass = idx === 0 ? 'bg-red-600 text-white active-srv' : 'bg-white/5 text-gray-300';
+                    return `
+                        <button onclick="switchServer(${idx})" data-index="${idx}" class="srv-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-white/15 transition-all ${activeClass}">
+                            ⭐ ${s.name}
+                        </button>
+                    `;
+                }
+                return '';
+            }).join('');
+
+            const generalHtml = SERVERS.map((s, idx) => {
+                if (s.category === 'general') {
+                    generalIndex++;
+                    const activeClass = (idx === 0 && !isAnimeType) ? 'bg-red-600 text-white active-srv' : 'bg-white/5 text-gray-300';
+                    return `
+                        <button onclick="switchServer(${idx})" data-index="${idx}" class="srv-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-white/15 transition-all ${activeClass}">
+                            📡 ${s.name}
+                        </button>
+                    `;
+                }
+                return '';
+            }).join('');
+
+            animeContainer.innerHTML = animeHtml;
+            generalContainer.innerHTML = generalHtml;
+
+            if (isAnimeType) {
+                badge.textContent = "Anime Gateways Preferred";
+                badge.classList.remove('hidden');
+                // Auto switch to first anime server (which is index 4 in list)
+                switchServer(4);
+            } else {
+                badge.textContent = "Standard Core Gateways";
+                badge.classList.remove('hidden');
+            }
+        }
+
+        function triggerServerLoad(idx) {
+            const frame = document.getElementById('videoFrame');
+            document.getElementById('playerLoader').classList.remove('hidden');
+            
+            let url = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
             if (currentDubLang) {
                 url += (url.includes('?') ? '&' : '?') + 'lang=' + currentDubLang;
             }
+
+            // Simulated Skip Intro feature
+            const mustSkipIntro = document.getElementById('autoSkipToggle').checked;
+            if (mustSkipIntro) {
+                showToast("Auto-Skip Intro applied: Advancing stream 85s");
+                url += (url.includes('?') ? '&' : '?') + 't=85';
+            }
+
             frame.src = url;
-            
-            renderServerButtons();
 
-            document.getElementById('playerLoader').classList.remove('hidden');
+            document.querySelectorAll('.srv-btn').forEach((btn) => {
+                const btnIdx = parseInt(btn.getAttribute('data-index'));
+                if(btnIdx === idx) {
+                    btn.classList.add('bg-red-600', 'text-white', 'active-srv');
+                    btn.classList.remove('bg-white/5', 'text-gray-300');
+                } else {
+                    btn.classList.remove('bg-red-600', 'text-white', 'active-srv');
+                    btn.classList.add('bg-white/5', 'text-gray-300');
+                }
+            });
+
             frame.onload = () => document.getElementById('playerLoader').classList.add('hidden');
-        }
-
-        function renderServerButtons() {
-            const serverListDesktop = document.getElementById('serverList');
-            const serverListMobile = document.getElementById('mobileServerList');
-            const btnsHtml = SERVERS.map((s, idx) => `
-                <button onclick="switchServer(${idx})" class="srv-btn px-4 py-1.5 shrink-0 bg-white/5 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition-all ${idx === 0 ? 'bg-red-600 text-white active-srv' : ''}">
-                    ${s.name}
-                </button>
-            `).join('');
-            serverListDesktop.innerHTML = btnsHtml;
-            serverListMobile.innerHTML = btnsHtml;
         }
 
         async function fetchItemDetails(id, type) {
@@ -724,7 +952,7 @@
                 const data = await res.json();
                 
                 document.getElementById('infoTitle').textContent = data.title || data.name || currentItem.title;
-                document.getElementById('infoDesc').textContent = data.overview || "No synopsis available.";
+                document.getElementById('infoDesc').textContent = data.overview || "No stream synopsis has been uploaded yet for this title.";
                 
                 if (data.vote_average) {
                     document.getElementById('infoRating').textContent = `★ ${data.vote_average.toFixed(1)}`;
@@ -740,15 +968,24 @@
                 }
                 document.getElementById('infoRuntime').textContent = runtimeStr;
 
-                // Handle Cast
+                // Set total seasons tracker
+                if (type === 'tv') {
+                    totalSeasonsInShow = data.number_of_seasons || 1;
+                }
+
+                // Promo anime tag if genre contains Animation (16) and Japanese lang
+                if (data.genres && data.genres.some(g => g.id === 16) && data.original_language === 'ja') {
+                    document.getElementById('animeTag').classList.remove('hidden');
+                    renderUnderPlayerServers(true);
+                }
+
                 if (data.credits && data.credits.cast && data.credits.cast.length > 0) {
                     const topCast = data.credits.cast.slice(0, 3).map(c => c.name).join(', ');
                     const castEl = document.getElementById('infoCast');
-                    castEl.textContent = `Starring: ${topCast}`;
+                    castEl.textContent = `Starring Lead Performers: ${topCast}`;
                     castEl.classList.remove('hidden');
                 }
 
-                // Handle Trailer
                 if (data.videos && data.videos.results) {
                     const trailer = data.videos.results.find(v => v.site === 'YouTube' && v.type === 'Trailer');
                     if (trailer) {
@@ -766,62 +1003,64 @@
                     }
                 }
             } catch (e) {
-                console.log("Error fetching details", e);
-                document.getElementById('infoDesc').textContent = "";
+                console.log("Error obtaining detail sets", e);
             }
         }
 
         async function fetchSeasons(id) {
-            document.getElementById('episodeList').innerHTML = '<div class="text-center p-4 text-xs text-gray-500"><div class="w-6 h-6 border-2 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>Loading episodes...</div>';
+            document.getElementById('episodeList').innerHTML = '<div class="text-center p-4 text-xs text-gray-500"><div class="w-6 h-6 border-2 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>Getting seasons list...</div>';
             try {
                 const res = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
                 const data = await res.json();
                 if (data.seasons) {
                     const valid = data.seasons.filter(s => s.season_number > 0);
-                    document.getElementById('seasonSelect').innerHTML = valid.map(s => `<option value="${s.season_number}">Season ${s.season_number}</option>`).join('');
+                    document.getElementById('seasonSelect').innerHTML = valid.map(s => `<option value="${s.season_number}" ${s.season_number === currentSeason ? 'selected' : ''}>Season ${s.season_number}</option>`).join('');
                     if(valid.length > 0) {
-                        loadSeason(valid[0].season_number);
+                        loadSeason(currentSeason || valid[0].season_number);
                     }
                 }
             } catch (e) {
-                document.getElementById('episodeList').innerHTML = '<div class="text-center p-4 text-xs text-red-500">Error loading episodes</div>';
+                document.getElementById('episodeList').innerHTML = '<div class="text-center p-4 text-xs text-red-500">Could not retrieve seasons</div>';
             }
         }
 
         async function loadSeason(season) {
             currentSeason = parseInt(season);
             const list = document.getElementById('episodeList');
-            list.innerHTML = '<div class="text-center p-4 text-xs text-gray-500"><div class="w-6 h-6 border-2 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>Loading season...</div>';
+            list.innerHTML = '<div class="text-center p-4 text-xs text-gray-500"><div class="w-6 h-6 border-2 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>Retrieving episode indexes...</div>';
             try {
                 const res = await fetch(`${BASE_URL}/tv/${currentItem.id}/season/${season}?api_key=${API_KEY}`);
                 const data = await res.json();
                 if (data.episodes) {
-                    currentSeasonData = data.episodes; // store for quick nav
-                    list.innerHTML = data.episodes.map(ep => `
-                        <div onclick="playEpisode(${ep.episode_number})" class="p-2 bg-white/5 hover:bg-white/10 cursor-pointer rounded-lg flex gap-3 group transition-all border border-transparent hover:border-white/10 hover:-translate-y-0.5">
-                            <div class="w-24 h-14 flex-none bg-black rounded overflow-hidden relative shadow-lg">
-                                <img src="${ep.still_path ? 'https://image.tmdb.org/t/p/w200'+ep.still_path : 'https://via.placeholder.com/200x112/111/444?text=No+Img'}" loading="lazy" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <svg class="w-5 h-5 text-red-500 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    currentSeasonData = data.episodes; 
+                    list.innerHTML = data.episodes.map(ep => {
+                        const activeBorderClass = ep.episode_number === currentEpisode ? 'border-red-600 bg-red-600/10' : 'border-transparent bg-white/5';
+                        const thumb = ep.still_path ? 'https://image.tmdb.org/t/p/w200'+ep.still_path : 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?auto=format&fit=crop&w=200&q=80';
+                        return `
+                            <div onclick="playEpisode(${ep.episode_number})" class="p-2 cursor-pointer rounded-xl flex gap-3 group transition-all border ${activeBorderClass} hover:border-white/10 hover:-translate-y-0.5">
+                                <div class="w-24 h-14 flex-none bg-zinc-900 rounded-lg overflow-hidden relative shadow-lg">
+                                    <img src="${thumb}" loading="lazy" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <svg class="w-5 h-5 text-red-500 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                </div>
+                                <div class="flex-grow min-w-0 flex flex-col justify-center">
+                                    <p class="text-[11px] font-bold text-white truncate group-hover:text-red-400 transition-colors">E${ep.episode_number}: ${ep.name}</p>
+                                    <p class="text-[9px] text-gray-500 mt-0.5 flex items-center gap-2">
+                                        <span>${ep.runtime ? ep.runtime + 'm' : '24m'}</span>
+                                        ${ep.vote_average ? `<span class="flex items-center text-yellow-500 gap-0.5"><svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>${ep.vote_average.toFixed(1)}</span>` : ''}
+                                    </p>
                                 </div>
                             </div>
-                            <div class="flex-grow min-w-0 flex flex-col justify-center">
-                                <p class="text-[11px] font-bold text-white truncate">E${ep.episode_number}: ${ep.name}</p>
-                                <p class="text-[9px] text-gray-500 mt-0.5 flex items-center gap-2">
-                                    <span>${ep.runtime ? ep.runtime + 'm' : ''}</span>
-                                    ${ep.vote_average ? `<span class="flex items-center text-yellow-500 gap-0.5"><svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>${ep.vote_average.toFixed(1)}</span>` : ''}
-                                </p>
-                            </div>
-                        </div>
-                    `).join('');
+                        `;
+                    }).join('');
                     
-                    // Call play if it's the first load
                     if(currentEpisode === 1 && data.episodes.length > 0) {
-                        playEpisode(1, false); // false = don't reload frame if it's just initializing
+                        playEpisode(1, false); 
                     }
                 }
             } catch(e) {
-                list.innerHTML = '<div class="text-center p-4 text-xs text-red-500">Error loading episodes</div>';
+                list.innerHTML = '<div class="text-center p-4 text-xs text-red-500">Failed to load episode arrays</div>';
             }
         }
 
@@ -829,19 +1068,22 @@
             currentEpisode = epNum;
             document.getElementById('currentEpLabel').textContent = `S${currentSeason} E${currentEpisode}`;
             
+            // Re-highlight current ep in sidepanel list
+            document.querySelectorAll('#episodeList > div').forEach((div, index) => {
+                if (index + 1 === epNum) {
+                    div.classList.add('border-red-600', 'bg-red-600/10');
+                    div.classList.remove('border-transparent', 'bg-white/5');
+                } else {
+                    div.classList.remove('border-red-600', 'bg-red-600/10');
+                    div.classList.add('border-transparent', 'bg-white/5');
+                }
+            });
+
             if (reloadFrame) {
                 let activeBtn = document.querySelector('.srv-btn.active-srv');
-                let idx = activeBtn ? Array.from(document.querySelectorAll('.srv-btn')).indexOf(activeBtn) : 0;
-                idx = idx % SERVERS.length; 
+                let idx = activeBtn ? parseInt(activeBtn.getAttribute('data-index')) : 0;
                 
-                const frame = document.getElementById('videoFrame');
-                document.getElementById('playerLoader').classList.remove('hidden');
-                
-                let url = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
-                if (currentDubLang) {
-                    url += (url.includes('?') ? '&' : '?') + 'lang=' + currentDubLang;
-                }
-                frame.src = url;
+                triggerServerLoad(idx);
             }
         }
 
@@ -852,29 +1094,33 @@
             if (episodeExists) {
                 playEpisode(nextEp);
             } else {
-                showToast(direction > 0 ? "End of current season." : "Beginning of season.");
+                // Check if next season exists
+                if (direction > 0 && currentSeason < totalSeasonsInShow) {
+                    showToast("Transitioning to Next Season!");
+                    currentSeason++;
+                    currentEpisode = 1;
+                    const select = document.getElementById('seasonSelect');
+                    if (select) {
+                        select.value = currentSeason;
+                        loadSeason(currentSeason);
+                    }
+                } else if (direction < 0 && currentSeason > 1) {
+                    showToast("Returning to Previous Season!");
+                    currentSeason--;
+                    currentEpisode = 1; // Default back to start
+                    const select = document.getElementById('seasonSelect');
+                    if (select) {
+                        select.value = currentSeason;
+                        loadSeason(currentSeason);
+                    }
+                } else {
+                    showToast(direction > 0 ? "You have reached the final episode." : "This is the first episode.");
+                }
             }
         }
 
         function switchServer(idx) {
-            const frame = document.getElementById('videoFrame');
-            document.getElementById('playerLoader').classList.remove('hidden');
-            
-            let url = SERVERS[idx].url(currentItem.id, currentItem.type, currentSeason, currentEpisode);
-            if (currentDubLang) {
-                url += (url.includes('?') ? '&' : '?') + 'lang=' + currentDubLang;
-            }
-            frame.src = url;
-
-            document.querySelectorAll('.srv-btn').forEach((btn, i) => {
-                if(i % SERVERS.length === idx) {
-                    btn.classList.add('bg-red-600', 'text-white', 'active-srv');
-                    btn.classList.remove('bg-white/5');
-                } else {
-                    btn.classList.remove('bg-red-600', 'text-white', 'active-srv');
-                    btn.classList.add('bg-white/5');
-                }
-            });
+            triggerServerLoad(idx);
         }
 
         function closePlayer() {
@@ -882,7 +1128,7 @@
             document.getElementById('videoFrame').src = "";
             document.body.style.overflow = 'auto';
             if (currentMode === 'history') {
-                fetchDiscovery('history'); // refresh history to show newly opened items
+                fetchDiscovery('history'); 
             }
         }
 
@@ -906,6 +1152,68 @@
                  const wlSvg = document.getElementById('nav-watchlist')?.querySelector('svg');
                  if(wlSvg) wlSvg.classList.add('group-hover:text-red-500');
             }
+        }
+
+        // --- Commmunity Chat/Comments System ---
+        function getCommentsStorageKey() {
+            if (!currentItem) return '';
+            return `kk_comments_${currentItem.id}`;
+        }
+
+        function renderComments() {
+            const listContainer = document.getElementById('commentsList');
+            const placeholder = document.getElementById('commentsPlaceholder');
+            const key = getCommentsStorageKey();
+            if (!key) return;
+
+            const comments = JSON.parse(localStorage.getItem(key)) || [];
+            listContainer.innerHTML = '';
+
+            if (comments.length === 0) {
+                placeholder.classList.remove('hidden');
+                return;
+            }
+
+            placeholder.classList.add('hidden');
+            const html = comments.map(c => `
+                <div class="p-3 bg-white/5 rounded-xl border border-white/5 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-black uppercase text-red-500 tracking-wider">Anon User #${c.userHash}</span>
+                        <span class="text-[9px] text-gray-500">${c.time}</span>
+                    </div>
+                    <p class="text-xs text-gray-200">${c.text}</p>
+                </div>
+            `).join('');
+
+            listContainer.innerHTML = html;
+            listContainer.scrollTop = listContainer.scrollHeight;
+        }
+
+        function postComment() {
+            const input = document.getElementById('commentInput');
+            const val = input.value.trim();
+            if (!val) return;
+
+            const key = getCommentsStorageKey();
+            if (!key) return;
+
+            const comments = JSON.parse(localStorage.getItem(key)) || [];
+            
+            // Create user hash for aesthetic appeal
+            const userHash = Math.floor(1000 + Math.random() * 9000);
+            
+            const newComment = {
+                userHash,
+                text: val,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            comments.push(newComment);
+            localStorage.setItem(key, JSON.stringify(comments));
+            input.value = '';
+            
+            renderComments();
+            showToast("Comment added locally!");
         }
     </script>
 </body>
